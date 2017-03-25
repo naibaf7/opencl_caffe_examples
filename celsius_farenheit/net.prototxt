@@ -1,0 +1,50 @@
+name: "net"
+layer {
+  name: "celsius"
+  type: "Input"
+  top: "celsius"
+  input_param {
+    shape {
+      dim: 1
+      dim: 1
+      dim: 1
+      dim: 1
+    }
+  }
+}
+layer {
+  name: "farenheit"
+  type: "Input"
+  top: "farenheit"
+  input_param {
+    shape {
+      dim: 1
+      dim: 1
+      dim: 1
+      dim: 1
+    }
+  }
+}
+layer {
+  name: "neuron"
+  type: "InnerProduct"
+  bottom: "celsius"
+  top: "neuron"
+  inner_product_param {
+    num_output: 1
+    weight_filler {
+      type: "constant"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "euclidean"
+  type: "EuclideanLoss"
+  bottom: "neuron"
+  bottom: "farenheit"
+  top: "euclidean"
+}
+
