@@ -1,0 +1,74 @@
+name: "net"
+layer {
+  name: "mnist_image"
+  type: "Input"
+  top: "mnist_image"
+  input_param {
+    shape {
+      dim: 1
+      dim: 1
+      dim: 1
+      dim: 784
+    }
+  }
+}
+layer {
+  name: "label"
+  type: "Input"
+  top: "label"
+  input_param {
+    shape {
+      dim: 1
+      dim: 1
+      dim: 1
+      dim: 1
+    }
+  }
+}
+layer {
+  name: "hidden_layer"
+  type: "InnerProduct"
+  bottom: "mnist_image"
+  top: "hidden_layer"
+  inner_product_param {
+    num_output: 30
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "output_layer"
+  type: "InnerProduct"
+  bottom: "hidden_layer"
+  top: "output_layer"
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "output_layer"
+  bottom: "label"
+  top: "loss"
+}
+layer {
+  name: "pred"
+  type: "Softmax"
+  bottom: "output_layer"
+  top: "pred"
+  include {
+    phase: TEST
+  }
+}
+
