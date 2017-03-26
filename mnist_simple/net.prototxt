@@ -61,6 +61,9 @@ layer {
   bottom: "output_layer"
   bottom: "label"
   top: "loss"
+  include {
+    phase: TRAIN
+  }
 }
 layer {
   name: "pred"
