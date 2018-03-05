@@ -1,0 +1,68 @@
+name: "net"
+layer {
+  name: "celsius"
+  type: "Input"
+  top: "celsius"
+  input_param {
+    shape {
+      dim: 1
+      dim: 1
+      dim: 1
+      dim: 1
+    }
+  }
+}
+layer {
+  name: "farenheit"
+  type: "Input"
+  top: "farenheit"
+  include {
+    phase: TRAIN
+  }
+  input_param {
+    shape {
+      dim: 1
+      dim: 1
+      dim: 1
+      dim: 1
+    }
+  }
+}
+layer {
+  name: "neuron"
+  type: "InnerProduct"
+  bottom: "celsius"
+  top: "neuron"
+  bottom_data_type: CAFFE_INT16_QUANTIZED
+  compute_data_type: CAFFE_INT16_QUANTIZED
+  top_data_type: CAFFE_INT16_QUANTIZED
+  inner_product_param {
+    num_output: 1
+    weight_filler {
+      type: "constant"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "output"
+  type: "Quantizer"
+  bottom: "neuron"
+  top: "output"
+  bottom_data_type: CAFFE_INT16_QUANTIZED
+  compute_data_type: CAFFE_INT16_QUANTIZED
+  top_data_type: CAFFE_FLOAT
+}
+layer {
+  name: "euclidean"
+  type: "EuclideanLoss"
+  bottom: "output"
+  bottom: "farenheit"
+  top: "euclidean"
+  include {
+    phase: TRAIN
+  }
+}
+

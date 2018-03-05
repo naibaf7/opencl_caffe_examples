@@ -30,6 +30,9 @@ layer {
   type: "InnerProduct"
   bottom: "mnist_image"
   top: "hidden_layer"
+  bottom_data_type: CAFFE_INT16_QUANTIZED
+  compute_data_type: CAFFE_INT16_QUANTIZED
+  top_data_type: CAFFE_INT16_QUANTIZED
   inner_product_param {
     num_output: 30
     weight_filler {
@@ -37,6 +40,7 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0.0
     }
   }
 }
@@ -45,6 +49,9 @@ layer {
   type: "InnerProduct"
   bottom: "hidden_layer"
   top: "output_layer"
+  bottom_data_type: CAFFE_INT16_QUANTIZED
+  compute_data_type: CAFFE_INT16_QUANTIZED
+  top_data_type: CAFFE_INT16_QUANTIZED
   inner_product_param {
     num_output: 10
     weight_filler {
@@ -52,6 +59,7 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0.0
     }
   }
 }

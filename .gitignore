@@ -2,3 +2,7 @@
 *.caffemodel
 *.solverstate
 .project
+*.caffe_debug*
+*__pycache__*
+*.goutputstream*
+*.pyc
