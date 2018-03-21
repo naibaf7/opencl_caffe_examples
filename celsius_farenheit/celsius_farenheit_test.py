@@ -3,7 +3,7 @@ sys.path.append('..')
 from caffe_examples_setup import *
 
 # Choose the precision (half, float, int16 or int8)
-precision = 'int16'
+precision = 'int8'
 
 # Define the training and testing data
 values_celsius = np.array([(float)(c) for c in range(-273,1000)])
