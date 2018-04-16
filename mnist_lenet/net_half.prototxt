@@ -31,11 +31,14 @@ layer {
   bottom: "mnist_image"
   top: "conv1"
   param {
-    lr_mult: 1
+    lr_mult: 1.0
   }
   param {
-    lr_mult: 2
+    lr_mult: 2.0
   }
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
   convolution_param {
     num_output: 20
     kernel_size: 5
@@ -53,6 +56,9 @@ layer {
   type: "Pooling"
   bottom: "conv1"
   top: "pool1"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
   pooling_param {
     pool: MAX
     kernel_size: 2
@@ -65,11 +71,14 @@ layer {
   bottom: "pool1"
   top: "conv2"
   param {
-    lr_mult: 1
+    lr_mult: 1.0
   }
   param {
-    lr_mult: 2
+    lr_mult: 2.0
   }
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
   convolution_param {
     num_output: 50
     kernel_size: 5
@@ -87,6 +96,9 @@ layer {
   type: "Pooling"
   bottom: "conv2"
   top: "pool2"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
   pooling_param {
     pool: MAX
     kernel_size: 2
@@ -99,11 +111,14 @@ layer {
   bottom: "pool2"
   top: "ip1"
   param {
-    lr_mult: 1
+    lr_mult: 1.0
   }
   param {
-    lr_mult: 2
+    lr_mult: 2.0
   }
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
   inner_product_param {
     num_output: 500
     weight_filler {
@@ -118,18 +133,18 @@ layer {
   name: "relu1"
   type: "ReLU"
   bottom: "ip1"
-  top: "ip1"
+  top: "relu1"
 }
 layer {
   name: "ip2"
   type: "InnerProduct"
-  bottom: "ip1"
+  bottom: "relu1"
   top: "ip2"
   param {
-    lr_mult: 1
+    lr_mult: 1.0
   }
   param {
-    lr_mult: 2
+    lr_mult: 2.0
   }
   inner_product_param {
     num_output: 10
