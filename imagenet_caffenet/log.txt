@@ -1,0 +1,1534 @@
+X server found. dri2 connection failed! 
+DRM_IOCTL_I915_GEM_APERTURE failed: Invalid argument
+Assuming 131072kB available aperture size.
+May lead to reduced performance or incorrect rendering.
+get chip id failed: -1 [2]
+param: 4, val: 0
+DRM_IOCTL_I915_GEM_APERTURE failed: Invalid argument
+Assuming 131072kB available aperture size.
+May lead to reduced performance or incorrect rendering.
+get chip id failed: -1 [2]
+param: 4, val: 0
+DRM_IOCTL_I915_GEM_APERTURE failed: Invalid argument
+Assuming 131072kB available aperture size.
+May lead to reduced performance or incorrect rendering.
+get chip id failed: -1 [22]
+param: 4, val: 0
+X server found. dri2 connection failed! 
+DRM_IOCTL_I915_GEM_APERTURE failed: Invalid argument
+Assuming 131072kB available aperture size.
+May lead to reduced performance or incorrect rendering.
+get chip id failed: -1 [2]
+param: 4, val: 0
+DRM_IOCTL_I915_GEM_APERTURE failed: Invalid argument
+Assuming 131072kB available aperture size.
+May lead to reduced performance or incorrect rendering.
+get chip id failed: -1 [2]
+param: 4, val: 0
+DRM_IOCTL_I915_GEM_APERTURE failed: Invalid argument
+Assuming 131072kB available aperture size.
+May lead to reduced performance or incorrect rendering.
+get chip id failed: -1 [22]
+param: 4, val: 0
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0420 03:13:08.909468 22014 ocl_device.cpp:61] CL_DEVICE_HOST_UNIFIED_MEMORY: 0
+cl_get_gt_device(): error, unknown device: 0
+Persistent storage path: /home/fabian/.local/share/caffe
+X server found. dri2 connection failed! 
+DRM_IOCTL_I915_GEM_APERTURE failed: Invalid argument
+Assuming 131072kB available aperture size.
+May lead to reduced performance or incorrect rendering.
+get chip id failed: -1 [2]
+param: 4, val: 0
+DRM_IOCTL_I915_GEM_APERTURE failed: Invalid argument
+Assuming 131072kB available aperture size.
+May lead to reduced performance or incorrect rendering.
+get chip id failed: -1 [2]
+param: 4, val: 0
+DRM_IOCTL_I915_GEM_APERTURE failed: Invalid argument
+Assuming 131072kB available aperture size.
+May lead to reduced performance or incorrect rendering.
+get chip id failed: -1 [22]
+param: 4, val: 0
+I0420 03:13:08.943862 22014 common.cpp:498] OpenCL platform: Intel: OpenCL 2.0 beignet 1.3 does not work correctly.
+I0420 03:13:08.945744 22014 net.cpp:390] The NetState phase (1) differed from the phase (0) specified by a rule in layer data
+I0420 03:13:08.945787 22014 net.cpp:390] The NetState phase (1) differed from the phase (0) specified by a rule in layer loss
+I0420 03:13:08.946327 22014 net.cpp:93] Initializing net from parameters: 
+name: "net"
+state {
+  phase: TEST
+  level: 0
+}
+layer {
+  name: "data"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  bottom_data_type: CAFFE_FLOAT
+  compute_data_type: CAFFE_FLOAT
+  top_data_type: CAFFE_FLOAT
+  transform_param {
+    mirror: false
+    crop_size: 227
+    mean_file: "/media/scratch/ILSVRC2012/data//imagenet_mean.binaryproto"
+  }
+  data_param {
+    source: "/media/scratch/ILSVRC2012/data//ilsvrc12_val_lmdb"
+    batch_size: 128
+    backend: LMDB
+  }
+}
+layer {
+  name: "data_data_0_converted"
+  type: "Quantizer"
+  bottom: "data"
+  top: "data_data_0_converted"
+  loss_weight: 0
+  bottom_data_type: CAFFE_FLOAT
+  compute_data_type: CAFFE_FLOAT
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "data"
+  }
+  top_quantizer {
+    name: "data"
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data_data_0_converted"
+  top: "conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "data"
+  }
+  convolution_param {
+    num_output: 96
+    kernel_size: 11
+    stride: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "relu1"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "conv1"
+  }
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "relu1"
+  top: "pool1"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "relu1"
+  }
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "pool1_pool1_0_converted"
+  type: "Quantizer"
+  bottom: "pool1"
+  top: "pool1_pool1_0_converted"
+  loss_weight: 0
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_FLOAT
+  bottom_quantizer {
+    name: "pool1"
+  }
+  top_quantizer {
+    name: "pool1"
+  }
+}
+layer {
+  name: "norm1"
+  type: "LRN"
+  bottom: "pool1_pool1_0_converted"
+  top: "norm1"
+  bottom_data_type: CAFFE_FLOAT
+  compute_data_type: CAFFE_FLOAT
+  top_data_type: CAFFE_FLOAT
+  bottom_quantizer {
+    name: "pool1"
+  }
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "norm1_norm1_0_converted"
+  type: "Quantizer"
+  bottom: "norm1"
+  top: "norm1_norm1_0_converted"
+  loss_weight: 0
+  bottom_data_type: CAFFE_FLOAT
+  compute_data_type: CAFFE_FLOAT
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "norm1"
+  }
+  top_quantizer {
+    name: "norm1"
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "norm1_norm1_0_converted"
+  top: "conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "norm1"
+  }
+  convolution_param {
+    num_output: 256
+    pad: 2
+    kernel_size: 5
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 1
+    }
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "relu2"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "conv2"
+  }
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "relu2"
+  top: "pool2"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "relu2"
+  }
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "pool2_pool2_0_converted"
+  type: "Quantizer"
+  bottom: "pool2"
+  top: "pool2_pool2_0_converted"
+  loss_weight: 0
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_FLOAT
+  bottom_quantizer {
+    name: "pool2"
+  }
+  top_quantizer {
+    name: "pool2"
+  }
+}
+layer {
+  name: "norm2"
+  type: "LRN"
+  bottom: "pool2_pool2_0_converted"
+  top: "norm2"
+  bottom_data_type: CAFFE_FLOAT
+  compute_data_type: CAFFE_FLOAT
+  top_data_type: CAFFE_FLOAT
+  bottom_quantizer {
+    name: "pool2"
+  }
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "norm2_norm2_0_converted"
+  type: "Quantizer"
+  bottom: "norm2"
+  top: "norm2_norm2_0_converted"
+  loss_weight: 0
+  bottom_data_type: CAFFE_FLOAT
+  compute_data_type: CAFFE_FLOAT
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "norm2"
+  }
+  top_quantizer {
+    name: "norm2"
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "norm2_norm2_0_converted"
+  top: "conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "norm2"
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "relu3"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "conv3"
+  }
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "relu3"
+  top: "conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "relu3"
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 1
+    }
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "relu4"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "conv4"
+  }
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "relu4"
+  top: "conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "relu4"
+  }
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 1
+    }
+  }
+}
+layer {
+  name: "relu5"
+  type: "ReLU"
+  bottom: "conv5"
+  top: "relu5"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "conv5"
+  }
+}
+layer {
+  name: "pool5"
+  type: "Pooling"
+  bottom: "relu5"
+  top: "pool5"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "relu5"
+  }
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "fc6"
+  type: "InnerProduct"
+  bottom: "pool5"
+  top: "fc6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "pool5"
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 1
+    }
+  }
+}
+layer {
+  name: "relu6"
+  type: "ReLU"
+  bottom: "fc6"
+  top: "relu6"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "fc6"
+  }
+}
+layer {
+  name: "drop6"
+  type: "Dropout"
+  bottom: "relu6"
+  top: "drop6"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "relu6"
+  }
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc7"
+  type: "InnerProduct"
+  bottom: "drop6"
+  top: "fc7"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "drop6"
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 1
+    }
+  }
+}
+layer {
+  name: "relu7"
+  type: "ReLU"
+  bottom: "fc7"
+  top: "relu7"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "fc7"
+  }
+}
+layer {
+  name: "drop7"
+  type: "Dropout"
+  bottom: "relu7"
+  top: "drop7"
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_HALF
+  bottom_quantizer {
+    name: "relu7"
+  }
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "drop7_drop7_0_converted"
+  type: "Quantizer"
+  bottom: "drop7"
+  top: "drop7_drop7_0_converted"
+  loss_weight: 0
+  bottom_data_type: CAFFE_HALF
+  compute_data_type: CAFFE_HALF
+  top_data_type: CAFFE_FLOAT
+  bottom_quantizer {
+    name: "drop7"
+  }
+  top_quantizer {
+    name: "drop7"
+  }
+}
+layer {
+  name: "fc8"
+  type: "InnerProduct"
+  bottom: "drop7_drop7_0_converted"
+  top: "fc8"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  bottom_data_type: CAFFE_FLOAT
+  compute_data_type: CAFFE_FLOAT
+  top_data_type: CAFFE_FLOAT
+  bottom_quantizer {
+    name: "drop7"
+  }
+  inner_product_param {
+    num_output: 1000
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "fc8"
+  bottom: "label"
+  top: "accuracy"
+  include {
+    phase: TEST
+  }
+  bottom_quantizer {
+    name: "fc8"
+  }
+  bottom_quantizer {
+    name: "label"
+  }
+  accuracy_param {
+    top_k: 5
+  }
+}
+I0420 03:13:08.946641 22014 layer_factory.cpp:74] Creating layer data
+I0420 03:13:08.946911 22014 db_lmdb.cpp:40] Opened lmdb /media/scratch/ILSVRC2012/data//ilsvrc12_val_lmdb
+I0420 03:13:08.946950 22014 net.cpp:158] Creating Layer data
+I0420 03:13:08.946965 22014 net.cpp:481] data -> data
+I0420 03:13:08.947059 22014 net.cpp:481] data -> label
+I0420 03:13:08.947105 22014 data_transformer.cpp:27] Loading mean file from: /media/scratch/ILSVRC2012/data//imagenet_mean.binaryproto
+I0420 03:13:08.955221 22014 data_layer.cpp:47] output data size: 128,3,227,227
+I0420 03:13:09.107987 22014 base_data_layer.cpp:76] Initializing prefetch
+I0420 03:13:09.108245 22014 base_data_layer.cpp:79] Prefetch initialized.
+I0420 03:13:09.108265 22014 net.cpp:196] Setting up data
+I0420 03:13:09.108343 22014 net.cpp:206] Top shape: 128 3 227 227 (19787136)
+I0420 03:13:09.108363 22014 net.cpp:206] Top shape: 128 (128)
+I0420 03:13:09.108371 22014 net.cpp:217] Memory required for data: 79149056 B
+I0420 03:13:09.108471 22014 layer_factory.cpp:74] Creating layer data_data_0_converted
+I0420 03:13:09.108566 22014 net.cpp:158] Creating Layer data_data_0_converted
+I0420 03:13:09.108587 22014 net.cpp:515] data_data_0_converted <- data
+I0420 03:13:09.108642 22014 net.cpp:481] data_data_0_converted -> data_data_0_converted
+I0420 03:13:09.108901 22014 net.cpp:196] Setting up data_data_0_converted
+I0420 03:13:09.108922 22014 net.cpp:206] Top shape: 128 3 227 227 (19787136)
+I0420 03:13:09.108932 22014 net.cpp:217] Memory required for data: 118723328 B
+I0420 03:13:09.108969 22014 layer_factory.cpp:74] Creating layer conv1
+I0420 03:13:09.109042 22014 net.cpp:158] Creating Layer conv1
+I0420 03:13:09.109056 22014 net.cpp:515] conv1 <- data_data_0_converted
+I0420 03:13:09.109093 22014 net.cpp:481] conv1 -> conv1
+I0420 03:13:09.124155 22014 net.cpp:196] Setting up conv1
+I0420 03:13:09.124222 22014 net.cpp:206] Top shape: 128 96 55 55 (37171200)
+I0420 03:13:09.124248 22014 net.cpp:217] Memory required for data: 193065728 B
+I0420 03:13:09.124446 22014 layer_factory.cpp:74] Creating layer relu1
+I0420 03:13:09.124529 22014 net.cpp:158] Creating Layer relu1
+I0420 03:13:09.124557 22014 net.cpp:515] relu1 <- conv1
+I0420 03:13:09.124595 22014 net.cpp:481] relu1 -> relu1
+I0420 03:13:09.125892 22014 net.cpp:196] Setting up relu1
+I0420 03:13:09.125918 22014 net.cpp:206] Top shape: 128 96 55 55 (37171200)
+I0420 03:13:09.125927 22014 net.cpp:217] Memory required for data: 267408128 B
+I0420 03:13:09.125965 22014 layer_factory.cpp:74] Creating layer pool1
+I0420 03:13:09.126024 22014 net.cpp:158] Creating Layer pool1
+I0420 03:13:09.126039 22014 net.cpp:515] pool1 <- relu1
+I0420 03:13:09.126072 22014 net.cpp:481] pool1 -> pool1
+I0420 03:13:09.135602 22014 net.cpp:196] Setting up pool1
+I0420 03:13:09.135634 22014 net.cpp:206] Top shape: 128 96 27 27 (8957952)
+I0420 03:13:09.135644 22014 net.cpp:217] Memory required for data: 285324032 B
+I0420 03:13:09.135694 22014 layer_factory.cpp:74] Creating layer pool1_pool1_0_converted
+I0420 03:13:09.135738 22014 net.cpp:158] Creating Layer pool1_pool1_0_converted
+I0420 03:13:09.135752 22014 net.cpp:515] pool1_pool1_0_converted <- pool1
+I0420 03:13:09.135793 22014 net.cpp:481] pool1_pool1_0_converted -> pool1_pool1_0_converted
+I0420 03:13:09.135967 22014 net.cpp:196] Setting up pool1_pool1_0_converted
+I0420 03:13:09.135985 22014 net.cpp:206] Top shape: 128 96 27 27 (8957952)
+I0420 03:13:09.135994 22014 net.cpp:211]     with loss weight 2.44503e-36
+I0420 03:13:09.136008 22014 net.cpp:217] Memory required for data: 321155840 B
+I0420 03:13:09.136039 22014 layer_factory.cpp:74] Creating layer norm1
+I0420 03:13:09.136090 22014 net.cpp:158] Creating Layer norm1
+I0420 03:13:09.136101 22014 net.cpp:515] norm1 <- pool1_pool1_0_converted
+I0420 03:13:09.136147 22014 net.cpp:481] norm1 -> norm1
+I0420 03:13:09.137169 22014 net.cpp:196] Setting up norm1
+I0420 03:13:09.137181 22014 net.cpp:206] Top shape: 128 96 27 27 (8957952)
+I0420 03:13:09.137187 22014 net.cpp:217] Memory required for data: 356987648 B
+I0420 03:13:09.137207 22014 layer_factory.cpp:74] Creating layer norm1_norm1_0_converted
+I0420 03:13:09.137231 22014 net.cpp:158] Creating Layer norm1_norm1_0_converted
+I0420 03:13:09.137238 22014 net.cpp:515] norm1_norm1_0_converted <- norm1
+I0420 03:13:09.137257 22014 net.cpp:481] norm1_norm1_0_converted -> norm1_norm1_0_converted
+I0420 03:13:09.137342 22014 net.cpp:196] Setting up norm1_norm1_0_converted
+I0420 03:13:09.137353 22014 net.cpp:206] Top shape: 128 96 27 27 (8957952)
+I0420 03:13:09.137358 22014 net.cpp:217] Memory required for data: 374903552 B
+I0420 03:13:09.137382 22014 layer_factory.cpp:74] Creating layer conv2
+I0420 03:13:09.137419 22014 net.cpp:158] Creating Layer conv2
+I0420 03:13:09.137428 22014 net.cpp:515] conv2 <- norm1_norm1_0_converted
+I0420 03:13:09.137446 22014 net.cpp:481] conv2 -> conv2
+I0420 03:13:09.176764 22014 net.cpp:196] Setting up conv2
+I0420 03:13:09.176785 22014 net.cpp:206] Top shape: 128 256 27 27 (23887872)
+I0420 03:13:09.176792 22014 net.cpp:217] Memory required for data: 422679296 B
+I0420 03:13:09.176863 22014 layer_factory.cpp:74] Creating layer relu2
+I0420 03:13:09.176892 22014 net.cpp:158] Creating Layer relu2
+I0420 03:13:09.176903 22014 net.cpp:515] relu2 <- conv2
+I0420 03:13:09.176923 22014 net.cpp:481] relu2 -> relu2
+I0420 03:13:09.177556 22014 net.cpp:196] Setting up relu2
+I0420 03:13:09.177570 22014 net.cpp:206] Top shape: 128 256 27 27 (23887872)
+I0420 03:13:09.177575 22014 net.cpp:217] Memory required for data: 470455040 B
+I0420 03:13:09.177597 22014 layer_factory.cpp:74] Creating layer pool2
+I0420 03:13:09.177624 22014 net.cpp:158] Creating Layer pool2
+I0420 03:13:09.177633 22014 net.cpp:515] pool2 <- relu2
+I0420 03:13:09.177654 22014 net.cpp:481] pool2 -> pool2
+I0420 03:13:09.183110 22014 net.cpp:196] Setting up pool2
+I0420 03:13:09.183135 22014 net.cpp:206] Top shape: 128 256 13 13 (5537792)
+I0420 03:13:09.183140 22014 net.cpp:217] Memory required for data: 481530624 B
+I0420 03:13:09.183169 22014 layer_factory.cpp:74] Creating layer pool2_pool2_0_converted
+I0420 03:13:09.183198 22014 net.cpp:158] Creating Layer pool2_pool2_0_converted
+I0420 03:13:09.183208 22014 net.cpp:515] pool2_pool2_0_converted <- pool2
+I0420 03:13:09.183230 22014 net.cpp:481] pool2_pool2_0_converted -> pool2_pool2_0_converted
+I0420 03:13:09.183331 22014 net.cpp:196] Setting up pool2_pool2_0_converted
+I0420 03:13:09.183341 22014 net.cpp:206] Top shape: 128 256 13 13 (5537792)
+I0420 03:13:09.183346 22014 net.cpp:211]     with loss weight 2.44503e-36
+I0420 03:13:09.183356 22014 net.cpp:217] Memory required for data: 503681792 B
+I0420 03:13:09.183373 22014 layer_factory.cpp:74] Creating layer norm2
+I0420 03:13:09.183404 22014 net.cpp:158] Creating Layer norm2
+I0420 03:13:09.183411 22014 net.cpp:515] norm2 <- pool2_pool2_0_converted
+I0420 03:13:09.183430 22014 net.cpp:481] norm2 -> norm2
+I0420 03:13:09.184347 22014 net.cpp:196] Setting up norm2
+I0420 03:13:09.184360 22014 net.cpp:206] Top shape: 128 256 13 13 (5537792)
+I0420 03:13:09.184366 22014 net.cpp:217] Memory required for data: 525832960 B
+I0420 03:13:09.184387 22014 layer_factory.cpp:74] Creating layer norm2_norm2_0_converted
+I0420 03:13:09.184412 22014 net.cpp:158] Creating Layer norm2_norm2_0_converted
+I0420 03:13:09.184420 22014 net.cpp:515] norm2_norm2_0_converted <- norm2
+I0420 03:13:09.184439 22014 net.cpp:481] norm2_norm2_0_converted -> norm2_norm2_0_converted
+I0420 03:13:09.184522 22014 net.cpp:196] Setting up norm2_norm2_0_converted
+I0420 03:13:09.184533 22014 net.cpp:206] Top shape: 128 256 13 13 (5537792)
+I0420 03:13:09.184538 22014 net.cpp:217] Memory required for data: 536908544 B
+I0420 03:13:09.184562 22014 layer_factory.cpp:74] Creating layer conv3
+I0420 03:13:09.184595 22014 net.cpp:158] Creating Layer conv3
+I0420 03:13:09.184612 22014 net.cpp:515] conv3 <- norm2_norm2_0_converted
+I0420 03:13:09.184634 22014 net.cpp:481] conv3 -> conv3
+I0420 03:13:09.288523 22014 net.cpp:196] Setting up conv3
+I0420 03:13:09.288555 22014 net.cpp:206] Top shape: 128 384 13 13 (8306688)
+I0420 03:13:09.288563 22014 net.cpp:217] Memory required for data: 553521920 B
+I0420 03:13:09.288653 22014 layer_factory.cpp:74] Creating layer relu3
+I0420 03:13:09.288691 22014 net.cpp:158] Creating Layer relu3
+I0420 03:13:09.288704 22014 net.cpp:515] relu3 <- conv3
+I0420 03:13:09.288727 22014 net.cpp:481] relu3 -> relu3
+I0420 03:13:09.289383 22014 net.cpp:196] Setting up relu3
+I0420 03:13:09.289397 22014 net.cpp:206] Top shape: 128 384 13 13 (8306688)
+I0420 03:13:09.289403 22014 net.cpp:217] Memory required for data: 570135296 B
+I0420 03:13:09.289429 22014 layer_factory.cpp:74] Creating layer conv4
+I0420 03:13:09.289470 22014 net.cpp:158] Creating Layer conv4
+I0420 03:13:09.289479 22014 net.cpp:515] conv4 <- relu3
+I0420 03:13:09.289502 22014 net.cpp:481] conv4 -> conv4
+I0420 03:13:09.365380 22149 data_layer.cpp:132] Prefetch batch: 256 ms.
+I0420 03:13:09.365434 22149 data_layer.cpp:133]      Read time: 1.205 ms.
+I0420 03:13:09.365439 22149 data_layer.cpp:134] Transform time: 254.188 ms.
+I0420 03:13:09.369541 22014 net.cpp:196] Setting up conv4
+I0420 03:13:09.369570 22014 net.cpp:206] Top shape: 128 384 13 13 (8306688)
+I0420 03:13:09.369577 22014 net.cpp:217] Memory required for data: 586748672 B
+I0420 03:13:09.369639 22014 layer_factory.cpp:74] Creating layer relu4
+I0420 03:13:09.369673 22014 net.cpp:158] Creating Layer relu4
+I0420 03:13:09.369686 22014 net.cpp:515] relu4 <- conv4
+I0420 03:13:09.369711 22014 net.cpp:481] relu4 -> relu4
+I0420 03:13:09.371315 22014 net.cpp:196] Setting up relu4
+I0420 03:13:09.371330 22014 net.cpp:206] Top shape: 128 384 13 13 (8306688)
+I0420 03:13:09.371336 22014 net.cpp:217] Memory required for data: 603362048 B
+I0420 03:13:09.371362 22014 layer_factory.cpp:74] Creating layer conv5
+I0420 03:13:09.371394 22014 net.cpp:158] Creating Layer conv5
+I0420 03:13:09.371402 22014 net.cpp:515] conv5 <- relu4
+I0420 03:13:09.371425 22014 net.cpp:481] conv5 -> conv5
+I0420 03:13:09.427613 22014 net.cpp:196] Setting up conv5
+I0420 03:13:09.427646 22014 net.cpp:206] Top shape: 128 256 13 13 (5537792)
+I0420 03:13:09.427654 22014 net.cpp:217] Memory required for data: 614437632 B
+I0420 03:13:09.427731 22014 layer_factory.cpp:74] Creating layer relu5
+I0420 03:13:09.427762 22014 net.cpp:158] Creating Layer relu5
+I0420 03:13:09.427773 22014 net.cpp:515] relu5 <- conv5
+I0420 03:13:09.427796 22014 net.cpp:481] relu5 -> relu5
+I0420 03:13:09.428436 22014 net.cpp:196] Setting up relu5
+I0420 03:13:09.428450 22014 net.cpp:206] Top shape: 128 256 13 13 (5537792)
+I0420 03:13:09.428457 22014 net.cpp:217] Memory required for data: 625513216 B
+I0420 03:13:09.428479 22014 layer_factory.cpp:74] Creating layer pool5
+I0420 03:13:09.428508 22014 net.cpp:158] Creating Layer pool5
+I0420 03:13:09.428515 22014 net.cpp:515] pool5 <- relu5
+I0420 03:13:09.428536 22014 net.cpp:481] pool5 -> pool5
+I0420 03:13:09.434132 22014 net.cpp:196] Setting up pool5
+I0420 03:13:09.434154 22014 net.cpp:206] Top shape: 128 256 6 6 (1179648)
+I0420 03:13:09.434159 22014 net.cpp:217] Memory required for data: 627872512 B
+I0420 03:13:09.434193 22014 layer_factory.cpp:74] Creating layer fc6
+I0420 03:13:09.434227 22014 net.cpp:158] Creating Layer fc6
+I0420 03:13:09.434238 22014 net.cpp:515] fc6 <- pool5
+I0420 03:13:09.434263 22014 net.cpp:481] fc6 -> fc6
+I0420 03:13:09.622591 22149 data_layer.cpp:132] Prefetch batch: 257 ms.
+I0420 03:13:09.622643 22149 data_layer.cpp:133]      Read time: 1.153 ms.
+I0420 03:13:09.622649 22149 data_layer.cpp:134] Transform time: 254.921 ms.
+I0420 03:13:09.875339 22149 data_layer.cpp:132] Prefetch batch: 252 ms.
+I0420 03:13:09.875388 22149 data_layer.cpp:133]      Read time: 1.064 ms.
+I0420 03:13:09.875393 22149 data_layer.cpp:134] Transform time: 250.511 ms.
+I0420 03:13:10.131443 22149 data_layer.cpp:132] Prefetch batch: 256 ms.
+I0420 03:13:10.131492 22149 data_layer.cpp:133]      Read time: 1.092 ms.
+I0420 03:13:10.131510 22149 data_layer.cpp:134] Transform time: 253.782 ms.
+I0420 03:13:13.656286 22014 net.cpp:196] Setting up fc6
+I0420 03:13:13.656342 22014 net.cpp:206] Top shape: 128 4096 (524288)
+I0420 03:13:13.656352 22014 net.cpp:217] Memory required for data: 628921088 B
+I0420 03:13:13.656445 22014 layer_factory.cpp:74] Creating layer relu6
+I0420 03:13:13.656497 22014 net.cpp:158] Creating Layer relu6
+I0420 03:13:13.656515 22014 net.cpp:515] relu6 <- fc6
+I0420 03:13:13.656549 22014 net.cpp:481] relu6 -> relu6
+I0420 03:13:13.657529 22014 net.cpp:196] Setting up relu6
+I0420 03:13:13.657543 22014 net.cpp:206] Top shape: 128 4096 (524288)
+I0420 03:13:13.657549 22014 net.cpp:217] Memory required for data: 629969664 B
+I0420 03:13:13.657570 22014 layer_factory.cpp:74] Creating layer drop6
+I0420 03:13:13.657603 22014 net.cpp:158] Creating Layer drop6
+I0420 03:13:13.657613 22014 net.cpp:515] drop6 <- relu6
+I0420 03:13:13.657634 22014 net.cpp:481] drop6 -> drop6
+I0420 03:13:13.658233 22014 net.cpp:196] Setting up drop6
+I0420 03:13:13.658246 22014 net.cpp:206] Top shape: 128 4096 (524288)
+I0420 03:13:13.658251 22014 net.cpp:217] Memory required for data: 631018240 B
+I0420 03:13:13.658272 22014 layer_factory.cpp:74] Creating layer fc7
+I0420 03:13:13.658298 22014 net.cpp:158] Creating Layer fc7
+I0420 03:13:13.658304 22014 net.cpp:515] fc7 <- drop6
+I0420 03:13:13.658324 22014 net.cpp:481] fc7 -> fc7
+I0420 03:13:15.485939 22014 net.cpp:196] Setting up fc7
+I0420 03:13:15.485990 22014 net.cpp:206] Top shape: 128 4096 (524288)
+I0420 03:13:15.485999 22014 net.cpp:217] Memory required for data: 632066816 B
+I0420 03:13:15.486094 22014 layer_factory.cpp:74] Creating layer relu7
+I0420 03:13:15.486150 22014 net.cpp:158] Creating Layer relu7
+I0420 03:13:15.486168 22014 net.cpp:515] relu7 <- fc7
+I0420 03:13:15.486203 22014 net.cpp:481] relu7 -> relu7
+I0420 03:13:15.487159 22014 net.cpp:196] Setting up relu7
+I0420 03:13:15.487172 22014 net.cpp:206] Top shape: 128 4096 (524288)
+I0420 03:13:15.487177 22014 net.cpp:217] Memory required for data: 633115392 B
+I0420 03:13:15.487196 22014 layer_factory.cpp:74] Creating layer drop7
+I0420 03:13:15.487221 22014 net.cpp:158] Creating Layer drop7
+I0420 03:13:15.487228 22014 net.cpp:515] drop7 <- relu7
+I0420 03:13:15.487246 22014 net.cpp:481] drop7 -> drop7
+I0420 03:13:15.487879 22014 net.cpp:196] Setting up drop7
+I0420 03:13:15.487891 22014 net.cpp:206] Top shape: 128 4096 (524288)
+I0420 03:13:15.487896 22014 net.cpp:217] Memory required for data: 634163968 B
+I0420 03:13:15.487920 22014 layer_factory.cpp:74] Creating layer drop7_drop7_0_converted
+I0420 03:13:15.487946 22014 net.cpp:158] Creating Layer drop7_drop7_0_converted
+I0420 03:13:15.487953 22014 net.cpp:515] drop7_drop7_0_converted <- drop7
+I0420 03:13:15.487973 22014 net.cpp:481] drop7_drop7_0_converted -> drop7_drop7_0_converted
+I0420 03:13:15.488073 22014 net.cpp:196] Setting up drop7_drop7_0_converted
+I0420 03:13:15.488085 22014 net.cpp:206] Top shape: 128 4096 (524288)
+I0420 03:13:15.488090 22014 net.cpp:211]     with loss weight 2.44503e-36
+I0420 03:13:15.488099 22014 net.cpp:217] Memory required for data: 636261120 B
+I0420 03:13:15.488126 22014 layer_factory.cpp:74] Creating layer fc8
+I0420 03:13:15.488162 22014 net.cpp:158] Creating Layer fc8
+I0420 03:13:15.488169 22014 net.cpp:515] fc8 <- drop7_drop7_0_converted
+I0420 03:13:15.488190 22014 net.cpp:481] fc8 -> fc8
+I0420 03:13:15.877131 22014 net.cpp:196] Setting up fc8
+I0420 03:13:15.877180 22014 net.cpp:206] Top shape: 128 1000 (128000)
+I0420 03:13:15.877190 22014 net.cpp:217] Memory required for data: 636773120 B
+I0420 03:13:15.877291 22014 layer_factory.cpp:74] Creating layer accuracy
+I0420 03:13:15.877346 22014 net.cpp:158] Creating Layer accuracy
+I0420 03:13:15.877364 22014 net.cpp:515] accuracy <- fc8
+I0420 03:13:15.877389 22014 net.cpp:515] accuracy <- label
+I0420 03:13:15.877409 22014 net.cpp:481] accuracy -> accuracy
+I0420 03:13:15.878564 22014 net.cpp:196] Setting up accuracy
+I0420 03:13:15.878576 22014 net.cpp:206] Top shape: 1 (1)
+I0420 03:13:15.878589 22014 net.cpp:217] Memory required for data: 636773124 B
+I0420 03:13:15.878602 22014 net.cpp:288] accuracy does not need backward computation.
+I0420 03:13:15.878609 22014 net.cpp:288] fc8 does not need backward computation.
+I0420 03:13:15.878615 22014 net.cpp:288] drop7_drop7_0_converted does not need backward computation.
+I0420 03:13:15.878623 22014 net.cpp:288] drop7 does not need backward computation.
+I0420 03:13:15.878628 22014 net.cpp:288] relu7 does not need backward computation.
+I0420 03:13:15.878634 22014 net.cpp:288] fc7 does not need backward computation.
+I0420 03:13:15.878639 22014 net.cpp:288] drop6 does not need backward computation.
+I0420 03:13:15.878645 22014 net.cpp:288] relu6 does not need backward computation.
+I0420 03:13:15.878650 22014 net.cpp:288] fc6 does not need backward computation.
+I0420 03:13:15.878656 22014 net.cpp:288] pool5 does not need backward computation.
+I0420 03:13:15.878662 22014 net.cpp:288] relu5 does not need backward computation.
+I0420 03:13:15.878667 22014 net.cpp:288] conv5 does not need backward computation.
+I0420 03:13:15.878674 22014 net.cpp:288] relu4 does not need backward computation.
+I0420 03:13:15.878679 22014 net.cpp:288] conv4 does not need backward computation.
+I0420 03:13:15.878685 22014 net.cpp:288] relu3 does not need backward computation.
+I0420 03:13:15.878691 22014 net.cpp:288] conv3 does not need backward computation.
+I0420 03:13:15.878697 22014 net.cpp:288] norm2_norm2_0_converted does not need backward computation.
+I0420 03:13:15.878703 22014 net.cpp:288] norm2 does not need backward computation.
+I0420 03:13:15.878710 22014 net.cpp:288] pool2_pool2_0_converted does not need backward computation.
+I0420 03:13:15.878715 22014 net.cpp:288] pool2 does not need backward computation.
+I0420 03:13:15.878721 22014 net.cpp:288] relu2 does not need backward computation.
+I0420 03:13:15.878726 22014 net.cpp:288] conv2 does not need backward computation.
+I0420 03:13:15.878733 22014 net.cpp:288] norm1_norm1_0_converted does not need backward computation.
+I0420 03:13:15.878739 22014 net.cpp:288] norm1 does not need backward computation.
+I0420 03:13:15.878746 22014 net.cpp:288] pool1_pool1_0_converted does not need backward computation.
+I0420 03:13:15.878751 22014 net.cpp:288] pool1 does not need backward computation.
+I0420 03:13:15.878757 22014 net.cpp:288] relu1 does not need backward computation.
+I0420 03:13:15.878763 22014 net.cpp:288] conv1 does not need backward computation.
+I0420 03:13:15.878769 22014 net.cpp:288] data_data_0_converted does not need backward computation.
+I0420 03:13:15.878777 22014 net.cpp:288] data does not need backward computation.
+I0420 03:13:15.878779 22014 net.cpp:331] This network produces output accuracy
+I0420 03:13:15.878844 22014 net.cpp:345] Network initialization done.
+I0420 03:13:15.878847 22014 net.cpp:346] Memory required for data: 636773124 B
+W0420 03:13:16.300663 22014 net.cpp:908] No quantizer parameters found for name: data_data_0_converted_net_quant
+W0420 03:13:16.300750 22014 net.cpp:908] No quantizer parameters found for name: pool1_pool1_0_converted_net_quant
+W0420 03:13:16.300773 22014 net.cpp:908] No quantizer parameters found for name: norm1_norm1_0_converted_net_quant
+W0420 03:13:16.300817 22014 net.cpp:908] No quantizer parameters found for name: pool2_pool2_0_converted_net_quant
+W0420 03:13:16.300840 22014 net.cpp:908] No quantizer parameters found for name: norm2_norm2_0_converted_net_quant
+W0420 03:13:16.301002 22014 net.cpp:908] No quantizer parameters found for name: drop7_drop7_0_converted_net_quant
+I0420 03:13:16.301040 22014 net.cpp:929] Copying source layer data
+I0420 03:13:16.301053 22014 net.cpp:929] Copying source layer conv1
+I0420 03:13:16.301784 22014 net.cpp:929] Copying source layer relu1
+I0420 03:13:16.301792 22014 net.cpp:929] Copying source layer pool1
+I0420 03:13:16.301796 22014 net.cpp:929] Copying source layer norm1
+I0420 03:13:16.301801 22014 net.cpp:929] Copying source layer conv2
+I0420 03:13:16.306859 22014 net.cpp:929] Copying source layer relu2
+I0420 03:13:16.306866 22014 net.cpp:929] Copying source layer pool2
+I0420 03:13:16.306880 22014 net.cpp:929] Copying source layer norm2
+I0420 03:13:16.306885 22014 net.cpp:929] Copying source layer conv3
+I0420 03:13:16.322412 22014 net.cpp:929] Copying source layer relu3
+I0420 03:13:16.322450 22014 net.cpp:929] Copying source layer conv4
+I0420 03:13:16.333118 22014 net.cpp:929] Copying source layer relu4
+I0420 03:13:16.333133 22014 net.cpp:929] Copying source layer conv5
+I0420 03:13:16.340234 22014 net.cpp:929] Copying source layer relu5
+I0420 03:13:16.340240 22014 net.cpp:929] Copying source layer pool5
+I0420 03:13:16.340245 22014 net.cpp:929] Copying source layer fc6
+I0420 03:13:16.940882 22014 net.cpp:929] Copying source layer relu6
+I0420 03:13:16.940918 22014 net.cpp:929] Copying source layer drop6
+I0420 03:13:16.940923 22014 net.cpp:929] Copying source layer fc7
+I0420 03:13:17.209307 22014 net.cpp:929] Copying source layer relu7
+I0420 03:13:17.209345 22014 net.cpp:929] Copying source layer drop7
+I0420 03:13:17.209352 22014 net.cpp:929] Copying source layer fc8
+I0420 03:13:17.234688 22014 net.cpp:929] Copying source layer accuracy
+I0420 03:13:21.218188 22014 blocking_queue.cpp:49] Waiting for data
+I0420 03:13:21.247576 22149 data_layer.cpp:132] Prefetch batch: 248 ms.
+I0420 03:13:21.247622 22149 data_layer.cpp:133]      Read time: 1.22 ms.
+I0420 03:13:21.247627 22149 data_layer.cpp:134] Transform time: 246.021 ms.
+I0420 03:13:21.487159 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:21.487203 22149 data_layer.cpp:133]      Read time: 1.142 ms.
+I0420 03:13:21.487208 22149 data_layer.cpp:134] Transform time: 237.237 ms.
+I0420 03:13:21.728457 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:21.728499 22149 data_layer.cpp:133]      Read time: 1.133 ms.
+I0420 03:13:21.728505 22149 data_layer.cpp:134] Transform time: 238.851 ms.
+I0420 03:13:21.971550 22149 data_layer.cpp:132] Prefetch batch: 243 ms.
+I0420 03:13:21.971591 22149 data_layer.cpp:133]      Read time: 1.16 ms.
+I0420 03:13:21.971596 22149 data_layer.cpp:134] Transform time: 240.568 ms.
+I0420 03:13:22.213856 22149 data_layer.cpp:132] Prefetch batch: 242 ms.
+I0420 03:13:22.213896 22149 data_layer.cpp:133]      Read time: 1.151 ms.
+I0420 03:13:22.213901 22149 data_layer.cpp:134] Transform time: 239.921 ms.
+I0420 03:13:22.457213 22149 data_layer.cpp:132] Prefetch batch: 243 ms.
+I0420 03:13:22.457255 22149 data_layer.cpp:133]      Read time: 1.153 ms.
+I0420 03:13:22.457260 22149 data_layer.cpp:134] Transform time: 241.045 ms.
+I0420 03:13:22.697800 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:22.697844 22149 data_layer.cpp:133]      Read time: 1.106 ms.
+I0420 03:13:22.697849 22149 data_layer.cpp:134] Transform time: 238.296 ms.
+I0420 03:13:22.939260 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:22.939299 22149 data_layer.cpp:133]      Read time: 1.149 ms.
+I0420 03:13:22.939304 22149 data_layer.cpp:134] Transform time: 239.178 ms.
+I0420 03:13:23.179927 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:23.179970 22149 data_layer.cpp:133]      Read time: 1.129 ms.
+I0420 03:13:23.179975 22149 data_layer.cpp:134] Transform time: 238.404 ms.
+I0420 03:13:23.422847 22149 data_layer.cpp:132] Prefetch batch: 242 ms.
+I0420 03:13:23.422888 22149 data_layer.cpp:133]      Read time: 1.187 ms.
+I0420 03:13:23.422893 22149 data_layer.cpp:134] Transform time: 240.451 ms.
+I0420 03:13:23.664544 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:23.664587 22149 data_layer.cpp:133]      Read time: 1.144 ms.
+I0420 03:13:23.664592 22149 data_layer.cpp:134] Transform time: 239.438 ms.
+I0420 03:13:23.906971 22149 data_layer.cpp:132] Prefetch batch: 242 ms.
+I0420 03:13:23.907014 22149 data_layer.cpp:133]      Read time: 1.158 ms.
+I0420 03:13:23.907018 22149 data_layer.cpp:134] Transform time: 240.078 ms.
+I0420 03:13:24.148269 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:24.148313 22149 data_layer.cpp:133]      Read time: 1.151 ms.
+I0420 03:13:24.148317 22149 data_layer.cpp:134] Transform time: 238.895 ms.
+I0420 03:13:24.383684 22149 data_layer.cpp:132] Prefetch batch: 235 ms.
+I0420 03:13:24.383739 22149 data_layer.cpp:133]      Read time: 1.073 ms.
+I0420 03:13:24.383745 22149 data_layer.cpp:134] Transform time: 233.4 ms.
+I0420 03:13:24.625470 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:24.625512 22149 data_layer.cpp:133]      Read time: 1.164 ms.
+I0420 03:13:24.625517 22149 data_layer.cpp:134] Transform time: 239.401 ms.
+I0420 03:13:24.865103 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:24.865150 22149 data_layer.cpp:133]      Read time: 1.103 ms.
+I0420 03:13:24.865155 22149 data_layer.cpp:134] Transform time: 237.248 ms.
+I0420 03:13:25.106148 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:25.106194 22149 data_layer.cpp:133]      Read time: 1.137 ms.
+I0420 03:13:25.106197 22149 data_layer.cpp:134] Transform time: 238.748 ms.
+I0420 03:13:25.348140 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:25.348181 22149 data_layer.cpp:133]      Read time: 1.124 ms.
+I0420 03:13:25.348186 22149 data_layer.cpp:134] Transform time: 239.529 ms.
+I0420 03:13:25.588912 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:25.588953 22149 data_layer.cpp:133]      Read time: 1.131 ms.
+I0420 03:13:25.588958 22149 data_layer.cpp:134] Transform time: 238.552 ms.
+I0420 03:13:25.830186 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:25.830230 22149 data_layer.cpp:133]      Read time: 1.137 ms.
+I0420 03:13:25.830235 22149 data_layer.cpp:134] Transform time: 238.77 ms.
+I0420 03:13:26.071503 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:26.071547 22149 data_layer.cpp:133]      Read time: 1.118 ms.
+I0420 03:13:26.071552 22149 data_layer.cpp:134] Transform time: 238.94 ms.
+I0420 03:13:26.311743 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:26.311799 22149 data_layer.cpp:133]      Read time: 1.145 ms.
+I0420 03:13:26.311805 22149 data_layer.cpp:134] Transform time: 237.784 ms.
+I0420 03:13:26.553972 22149 data_layer.cpp:132] Prefetch batch: 242 ms.
+I0420 03:13:26.554014 22149 data_layer.cpp:133]      Read time: 1.124 ms.
+I0420 03:13:26.554019 22149 data_layer.cpp:134] Transform time: 239.84 ms.
+I0420 03:13:26.796200 22149 data_layer.cpp:132] Prefetch batch: 242 ms.
+I0420 03:13:26.796245 22149 data_layer.cpp:133]      Read time: 1.132 ms.
+I0420 03:13:26.796250 22149 data_layer.cpp:134] Transform time: 239.907 ms.
+I0420 03:13:27.036898 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:27.036939 22149 data_layer.cpp:133]      Read time: 1.11 ms.
+I0420 03:13:27.036943 22149 data_layer.cpp:134] Transform time: 238.504 ms.
+I0420 03:13:27.277925 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:27.277969 22149 data_layer.cpp:133]      Read time: 1.127 ms.
+I0420 03:13:27.277974 22149 data_layer.cpp:134] Transform time: 238.693 ms.
+I0420 03:13:27.519138 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:27.519181 22149 data_layer.cpp:133]      Read time: 1.143 ms.
+I0420 03:13:27.519186 22149 data_layer.cpp:134] Transform time: 238.891 ms.
+I0420 03:13:27.759676 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:27.759717 22149 data_layer.cpp:133]      Read time: 1.118 ms.
+I0420 03:13:27.759722 22149 data_layer.cpp:134] Transform time: 238.275 ms.
+I0420 03:13:28.005496 22149 data_layer.cpp:132] Prefetch batch: 245 ms.
+I0420 03:13:28.005543 22149 data_layer.cpp:133]      Read time: 1.155 ms.
+I0420 03:13:28.005548 22149 data_layer.cpp:134] Transform time: 243.416 ms.
+I0420 03:13:28.245745 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:28.245786 22149 data_layer.cpp:133]      Read time: 1.092 ms.
+I0420 03:13:28.245791 22149 data_layer.cpp:134] Transform time: 237.971 ms.
+I0420 03:13:28.486189 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:28.486232 22149 data_layer.cpp:133]      Read time: 1.125 ms.
+I0420 03:13:28.486238 22149 data_layer.cpp:134] Transform time: 238.089 ms.
+I0420 03:13:28.724210 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:28.724251 22149 data_layer.cpp:133]      Read time: 1.104 ms.
+I0420 03:13:28.724267 22149 data_layer.cpp:134] Transform time: 235.783 ms.
+I0420 03:13:28.965289 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:28.965330 22149 data_layer.cpp:133]      Read time: 1.091 ms.
+I0420 03:13:28.965335 22149 data_layer.cpp:134] Transform time: 238.783 ms.
+I0420 03:13:29.205143 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:29.205184 22149 data_layer.cpp:133]      Read time: 1.126 ms.
+I0420 03:13:29.205188 22149 data_layer.cpp:134] Transform time: 237.504 ms.
+I0420 03:13:29.444219 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:29.444264 22149 data_layer.cpp:133]      Read time: 1.106 ms.
+I0420 03:13:29.444269 22149 data_layer.cpp:134] Transform time: 236.835 ms.
+I0420 03:13:29.684036 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:29.684082 22149 data_layer.cpp:133]      Read time: 1.123 ms.
+I0420 03:13:29.684085 22149 data_layer.cpp:134] Transform time: 237.494 ms.
+I0420 03:13:29.921973 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:29.922017 22149 data_layer.cpp:133]      Read time: 1.121 ms.
+I0420 03:13:29.922022 22149 data_layer.cpp:134] Transform time: 235.702 ms.
+I0420 03:13:30.162387 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:30.162431 22149 data_layer.cpp:133]      Read time: 1.089 ms.
+I0420 03:13:30.162436 22149 data_layer.cpp:134] Transform time: 238.242 ms.
+I0420 03:13:30.399237 22149 data_layer.cpp:132] Prefetch batch: 236 ms.
+I0420 03:13:30.399281 22149 data_layer.cpp:133]      Read time: 1.099 ms.
+I0420 03:13:30.399286 22149 data_layer.cpp:134] Transform time: 234.669 ms.
+I0420 03:13:30.639616 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:30.639662 22149 data_layer.cpp:133]      Read time: 1.105 ms.
+I0420 03:13:30.639667 22149 data_layer.cpp:134] Transform time: 237.939 ms.
+I0420 03:13:30.878278 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:30.878324 22149 data_layer.cpp:133]      Read time: 1.142 ms.
+I0420 03:13:30.878327 22149 data_layer.cpp:134] Transform time: 236.379 ms.
+I0420 03:13:31.116909 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:31.116955 22149 data_layer.cpp:133]      Read time: 1.072 ms.
+I0420 03:13:31.116960 22149 data_layer.cpp:134] Transform time: 236.411 ms.
+I0420 03:13:31.356689 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:31.356737 22149 data_layer.cpp:133]      Read time: 1.182 ms.
+I0420 03:13:31.356742 22149 data_layer.cpp:134] Transform time: 237.382 ms.
+I0420 03:13:31.598460 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:31.598507 22149 data_layer.cpp:133]      Read time: 1.106 ms.
+I0420 03:13:31.598511 22149 data_layer.cpp:134] Transform time: 239.319 ms.
+I0420 03:13:31.838567 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:31.838610 22149 data_layer.cpp:133]      Read time: 1.111 ms.
+I0420 03:13:31.838614 22149 data_layer.cpp:134] Transform time: 237.781 ms.
+I0420 03:13:32.079911 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:32.079953 22149 data_layer.cpp:133]      Read time: 1.107 ms.
+I0420 03:13:32.079958 22149 data_layer.cpp:134] Transform time: 239.087 ms.
+I0420 03:13:32.319391 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:32.319432 22149 data_layer.cpp:133]      Read time: 1.08 ms.
+I0420 03:13:32.319437 22149 data_layer.cpp:134] Transform time: 237.19 ms.
+I0420 03:13:32.562917 22149 data_layer.cpp:132] Prefetch batch: 243 ms.
+I0420 03:13:32.562958 22149 data_layer.cpp:133]      Read time: 1.11 ms.
+I0420 03:13:32.562963 22149 data_layer.cpp:134] Transform time: 241.196 ms.
+I0420 03:13:32.805069 22149 data_layer.cpp:132] Prefetch batch: 242 ms.
+I0420 03:13:32.805112 22149 data_layer.cpp:133]      Read time: 1.117 ms.
+I0420 03:13:32.805116 22149 data_layer.cpp:134] Transform time: 239.833 ms.
+I0420 03:13:33.046589 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:33.046633 22149 data_layer.cpp:133]      Read time: 1.095 ms.
+I0420 03:13:33.046639 22149 data_layer.cpp:134] Transform time: 239.231 ms.
+I0420 03:13:33.284493 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:33.284539 22149 data_layer.cpp:133]      Read time: 1.138 ms.
+I0420 03:13:33.284543 22149 data_layer.cpp:134] Transform time: 235.574 ms.
+I0420 03:13:33.525863 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:33.525904 22149 data_layer.cpp:133]      Read time: 1.125 ms.
+I0420 03:13:33.525909 22149 data_layer.cpp:134] Transform time: 239.015 ms.
+I0420 03:13:33.764217 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:33.764262 22149 data_layer.cpp:133]      Read time: 1.085 ms.
+I0420 03:13:33.764267 22149 data_layer.cpp:134] Transform time: 236.043 ms.
+I0420 03:13:34.001469 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:34.001511 22149 data_layer.cpp:133]      Read time: 1.094 ms.
+I0420 03:13:34.001516 22149 data_layer.cpp:134] Transform time: 235 ms.
+I0420 03:13:34.239825 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:34.239866 22149 data_layer.cpp:133]      Read time: 1.099 ms.
+I0420 03:13:34.239871 22149 data_layer.cpp:134] Transform time: 236.063 ms.
+I0420 03:13:34.480247 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:34.480286 22149 data_layer.cpp:133]      Read time: 1.114 ms.
+I0420 03:13:34.480293 22149 data_layer.cpp:134] Transform time: 237.943 ms.
+I0420 03:13:34.719764 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:34.719804 22149 data_layer.cpp:133]      Read time: 1.146 ms.
+I0420 03:13:34.719807 22149 data_layer.cpp:134] Transform time: 237.218 ms.
+I0420 03:13:34.960012 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:34.960054 22149 data_layer.cpp:133]      Read time: 1.116 ms.
+I0420 03:13:34.960059 22149 data_layer.cpp:134] Transform time: 238.104 ms.
+I0420 03:13:35.198094 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:35.198139 22149 data_layer.cpp:133]      Read time: 1.098 ms.
+I0420 03:13:35.198144 22149 data_layer.cpp:134] Transform time: 235.821 ms.
+I0420 03:13:35.436792 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:35.436836 22149 data_layer.cpp:133]      Read time: 1.09 ms.
+I0420 03:13:35.436841 22149 data_layer.cpp:134] Transform time: 236.404 ms.
+I0420 03:13:35.674667 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:35.674711 22149 data_layer.cpp:133]      Read time: 1.083 ms.
+I0420 03:13:35.674716 22149 data_layer.cpp:134] Transform time: 235.651 ms.
+I0420 03:13:35.913813 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:35.913857 22149 data_layer.cpp:133]      Read time: 1.068 ms.
+I0420 03:13:35.913862 22149 data_layer.cpp:134] Transform time: 236.792 ms.
+I0420 03:13:36.154867 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:36.154912 22149 data_layer.cpp:133]      Read time: 1.136 ms.
+I0420 03:13:36.154917 22149 data_layer.cpp:134] Transform time: 238.732 ms.
+I0420 03:13:36.395714 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:36.395758 22149 data_layer.cpp:133]      Read time: 1.188 ms.
+I0420 03:13:36.395763 22149 data_layer.cpp:134] Transform time: 238.412 ms.
+I0420 03:13:36.633744 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:36.633783 22149 data_layer.cpp:133]      Read time: 1.081 ms.
+I0420 03:13:36.633788 22149 data_layer.cpp:134] Transform time: 235.801 ms.
+I0420 03:13:36.873342 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:36.873389 22149 data_layer.cpp:133]      Read time: 1.107 ms.
+I0420 03:13:36.873394 22149 data_layer.cpp:134] Transform time: 237.319 ms.
+I0420 03:13:37.112046 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:37.112090 22149 data_layer.cpp:133]      Read time: 1.089 ms.
+I0420 03:13:37.112095 22149 data_layer.cpp:134] Transform time: 236.413 ms.
+I0420 03:13:37.354249 22149 data_layer.cpp:132] Prefetch batch: 242 ms.
+I0420 03:13:37.354295 22149 data_layer.cpp:133]      Read time: 1.123 ms.
+I0420 03:13:37.354300 22149 data_layer.cpp:134] Transform time: 239.93 ms.
+I0420 03:13:37.593595 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:37.593646 22149 data_layer.cpp:133]      Read time: 1.125 ms.
+I0420 03:13:37.593662 22149 data_layer.cpp:134] Transform time: 236.999 ms.
+I0420 03:13:37.833438 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:37.833482 22149 data_layer.cpp:133]      Read time: 1.115 ms.
+I0420 03:13:37.833485 22149 data_layer.cpp:134] Transform time: 237.536 ms.
+I0420 03:13:38.072322 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:38.072362 22149 data_layer.cpp:133]      Read time: 1.114 ms.
+I0420 03:13:38.072366 22149 data_layer.cpp:134] Transform time: 236.518 ms.
+I0420 03:13:38.310353 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:38.310397 22149 data_layer.cpp:133]      Read time: 1.104 ms.
+I0420 03:13:38.310402 22149 data_layer.cpp:134] Transform time: 235.682 ms.
+I0420 03:13:38.550225 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:38.550266 22149 data_layer.cpp:133]      Read time: 1.114 ms.
+I0420 03:13:38.550271 22149 data_layer.cpp:134] Transform time: 237.586 ms.
+I0420 03:13:38.789608 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:38.789650 22149 data_layer.cpp:133]      Read time: 1.094 ms.
+I0420 03:13:38.789654 22149 data_layer.cpp:134] Transform time: 236.983 ms.
+I0420 03:13:39.027333 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:39.027374 22149 data_layer.cpp:133]      Read time: 1.103 ms.
+I0420 03:13:39.027377 22149 data_layer.cpp:134] Transform time: 235.377 ms.
+I0420 03:13:39.269100 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:39.269145 22149 data_layer.cpp:133]      Read time: 1.158 ms.
+I0420 03:13:39.269148 22149 data_layer.cpp:134] Transform time: 239.406 ms.
+I0420 03:13:39.509234 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:39.509277 22149 data_layer.cpp:133]      Read time: 1.117 ms.
+I0420 03:13:39.509282 22149 data_layer.cpp:134] Transform time: 237.79 ms.
+I0420 03:13:39.749249 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:39.749294 22149 data_layer.cpp:133]      Read time: 1.097 ms.
+I0420 03:13:39.749300 22149 data_layer.cpp:134] Transform time: 237.659 ms.
+I0420 03:13:39.988523 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:39.988564 22149 data_layer.cpp:133]      Read time: 1.104 ms.
+I0420 03:13:39.988569 22149 data_layer.cpp:134] Transform time: 237.029 ms.
+I0420 03:13:40.226477 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:40.226519 22149 data_layer.cpp:133]      Read time: 1.076 ms.
+I0420 03:13:40.226523 22149 data_layer.cpp:134] Transform time: 235.737 ms.
+I0420 03:13:40.468364 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:40.468403 22149 data_layer.cpp:133]      Read time: 1.143 ms.
+I0420 03:13:40.468408 22149 data_layer.cpp:134] Transform time: 239.477 ms.
+I0420 03:13:40.708652 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:40.708693 22149 data_layer.cpp:133]      Read time: 1.138 ms.
+I0420 03:13:40.708698 22149 data_layer.cpp:134] Transform time: 237.898 ms.
+I0420 03:13:40.947743 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:40.947784 22149 data_layer.cpp:133]      Read time: 1.094 ms.
+I0420 03:13:40.947789 22149 data_layer.cpp:134] Transform time: 236.769 ms.
+I0420 03:13:41.184499 22149 data_layer.cpp:132] Prefetch batch: 236 ms.
+I0420 03:13:41.184540 22149 data_layer.cpp:133]      Read time: 1.08 ms.
+I0420 03:13:41.184545 22149 data_layer.cpp:134] Transform time: 234.478 ms.
+I0420 03:13:41.427311 22149 data_layer.cpp:132] Prefetch batch: 242 ms.
+I0420 03:13:41.427356 22149 data_layer.cpp:133]      Read time: 1.242 ms.
+I0420 03:13:41.427359 22149 data_layer.cpp:134] Transform time: 240.376 ms.
+I0420 03:13:41.667219 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:41.667259 22149 data_layer.cpp:133]      Read time: 1.105 ms.
+I0420 03:13:41.667263 22149 data_layer.cpp:134] Transform time: 237.503 ms.
+I0420 03:13:41.908114 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:41.908164 22149 data_layer.cpp:133]      Read time: 1.149 ms.
+I0420 03:13:41.908169 22149 data_layer.cpp:134] Transform time: 238.446 ms.
+I0420 03:13:42.148005 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:42.148047 22149 data_layer.cpp:133]      Read time: 1.086 ms.
+I0420 03:13:42.148051 22149 data_layer.cpp:134] Transform time: 237.511 ms.
+I0420 03:13:42.388190 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:42.388228 22149 data_layer.cpp:133]      Read time: 1.105 ms.
+I0420 03:13:42.388233 22149 data_layer.cpp:134] Transform time: 237.943 ms.
+I0420 03:13:42.626967 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:42.627012 22149 data_layer.cpp:133]      Read time: 1.083 ms.
+I0420 03:13:42.627017 22149 data_layer.cpp:134] Transform time: 236.473 ms.
+I0420 03:13:42.869828 22149 data_layer.cpp:132] Prefetch batch: 242 ms.
+I0420 03:13:42.869871 22149 data_layer.cpp:133]      Read time: 1.094 ms.
+I0420 03:13:42.869875 22149 data_layer.cpp:134] Transform time: 240.634 ms.
+I0420 03:13:43.112794 22149 data_layer.cpp:132] Prefetch batch: 242 ms.
+I0420 03:13:43.112838 22149 data_layer.cpp:133]      Read time: 1.125 ms.
+I0420 03:13:43.112841 22149 data_layer.cpp:134] Transform time: 240.649 ms.
+I0420 03:13:43.351564 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:43.351610 22149 data_layer.cpp:133]      Read time: 1.086 ms.
+I0420 03:13:43.351615 22149 data_layer.cpp:134] Transform time: 236.429 ms.
+I0420 03:13:43.591646 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:43.591689 22149 data_layer.cpp:133]      Read time: 1.101 ms.
+I0420 03:13:43.591694 22149 data_layer.cpp:134] Transform time: 237.775 ms.
+I0420 03:13:43.830132 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:43.830173 22149 data_layer.cpp:133]      Read time: 1.086 ms.
+I0420 03:13:43.830179 22149 data_layer.cpp:134] Transform time: 236.144 ms.
+I0420 03:13:44.067003 22149 data_layer.cpp:132] Prefetch batch: 236 ms.
+I0420 03:13:44.067047 22149 data_layer.cpp:133]      Read time: 1.06 ms.
+I0420 03:13:44.067052 22149 data_layer.cpp:134] Transform time: 234.603 ms.
+I0420 03:13:44.305950 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:44.305994 22149 data_layer.cpp:133]      Read time: 1.103 ms.
+I0420 03:13:44.305999 22149 data_layer.cpp:134] Transform time: 236.552 ms.
+I0420 03:13:44.545472 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:44.545516 22149 data_layer.cpp:133]      Read time: 1.078 ms.
+I0420 03:13:44.545521 22149 data_layer.cpp:134] Transform time: 237.269 ms.
+I0420 03:13:44.784286 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:44.784328 22149 data_layer.cpp:133]      Read time: 1.078 ms.
+I0420 03:13:44.784333 22149 data_layer.cpp:134] Transform time: 236.525 ms.
+I0420 03:13:45.021806 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:45.021845 22149 data_layer.cpp:133]      Read time: 1.1 ms.
+I0420 03:13:45.021849 22149 data_layer.cpp:134] Transform time: 235.194 ms.
+I0420 03:13:45.261032 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:45.261075 22149 data_layer.cpp:133]      Read time: 1.126 ms.
+I0420 03:13:45.261080 22149 data_layer.cpp:134] Transform time: 237.096 ms.
+I0420 03:13:45.503142 22149 data_layer.cpp:132] Prefetch batch: 242 ms.
+I0420 03:13:45.503188 22149 data_layer.cpp:133]      Read time: 1.111 ms.
+I0420 03:13:45.503192 22149 data_layer.cpp:134] Transform time: 239.87 ms.
+I0420 03:13:45.742036 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:45.742075 22149 data_layer.cpp:133]      Read time: 1.105 ms.
+I0420 03:13:45.742080 22149 data_layer.cpp:134] Transform time: 236.64 ms.
+I0420 03:13:45.979784 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:45.979827 22149 data_layer.cpp:133]      Read time: 1.077 ms.
+I0420 03:13:45.979832 22149 data_layer.cpp:134] Transform time: 235.525 ms.
+I0420 03:13:46.216675 22149 data_layer.cpp:132] Prefetch batch: 236 ms.
+I0420 03:13:46.216715 22149 data_layer.cpp:133]      Read time: 1.107 ms.
+I0420 03:13:46.216720 22149 data_layer.cpp:134] Transform time: 234.642 ms.
+I0420 03:13:46.456743 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:46.456789 22149 data_layer.cpp:133]      Read time: 1.19 ms.
+I0420 03:13:46.456805 22149 data_layer.cpp:134] Transform time: 237.633 ms.
+I0420 03:13:46.697059 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:46.697099 22149 data_layer.cpp:133]      Read time: 1.086 ms.
+I0420 03:13:46.697104 22149 data_layer.cpp:134] Transform time: 238.093 ms.
+I0420 03:13:46.937045 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:46.937091 22149 data_layer.cpp:133]      Read time: 1.095 ms.
+I0420 03:13:46.937095 22149 data_layer.cpp:134] Transform time: 237.729 ms.
+I0420 03:13:47.178773 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:47.178812 22149 data_layer.cpp:133]      Read time: 1.109 ms.
+I0420 03:13:47.178817 22149 data_layer.cpp:134] Transform time: 239.484 ms.
+I0420 03:13:47.419157 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:47.419196 22149 data_layer.cpp:133]      Read time: 1.113 ms.
+I0420 03:13:47.419201 22149 data_layer.cpp:134] Transform time: 238.122 ms.
+I0420 03:13:47.657426 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:47.657467 22149 data_layer.cpp:133]      Read time: 1.082 ms.
+I0420 03:13:47.657472 22149 data_layer.cpp:134] Transform time: 235.961 ms.
+I0420 03:13:47.895825 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:47.895875 22149 data_layer.cpp:133]      Read time: 1.084 ms.
+I0420 03:13:47.895879 22149 data_layer.cpp:134] Transform time: 235.986 ms.
+I0420 03:13:48.133972 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:48.134013 22149 data_layer.cpp:133]      Read time: 1.12 ms.
+I0420 03:13:48.134018 22149 data_layer.cpp:134] Transform time: 235.865 ms.
+I0420 03:13:48.372704 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:48.372747 22149 data_layer.cpp:133]      Read time: 1.131 ms.
+I0420 03:13:48.372751 22149 data_layer.cpp:134] Transform time: 236.475 ms.
+I0420 03:13:48.612787 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:48.612828 22149 data_layer.cpp:133]      Read time: 1.097 ms.
+I0420 03:13:48.612833 22149 data_layer.cpp:134] Transform time: 237.771 ms.
+I0420 03:13:48.849781 22149 data_layer.cpp:132] Prefetch batch: 236 ms.
+I0420 03:13:48.849825 22149 data_layer.cpp:133]      Read time: 1.078 ms.
+I0420 03:13:48.849830 22149 data_layer.cpp:134] Transform time: 234.743 ms.
+I0420 03:13:49.088371 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:49.088413 22149 data_layer.cpp:133]      Read time: 1.11 ms.
+I0420 03:13:49.088418 22149 data_layer.cpp:134] Transform time: 236.308 ms.
+I0420 03:13:49.328281 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:49.328322 22149 data_layer.cpp:133]      Read time: 1.118 ms.
+I0420 03:13:49.328327 22149 data_layer.cpp:134] Transform time: 237.648 ms.
+I0420 03:13:49.565501 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:49.565546 22149 data_layer.cpp:133]      Read time: 1.065 ms.
+I0420 03:13:49.565551 22149 data_layer.cpp:134] Transform time: 234.961 ms.
+I0420 03:13:49.803032 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:49.803073 22149 data_layer.cpp:133]      Read time: 1.082 ms.
+I0420 03:13:49.803079 22149 data_layer.cpp:134] Transform time: 235.29 ms.
+I0420 03:13:50.040102 22149 data_layer.cpp:132] Prefetch batch: 236 ms.
+I0420 03:13:50.040148 22149 data_layer.cpp:133]      Read time: 1.095 ms.
+I0420 03:13:50.040153 22149 data_layer.cpp:134] Transform time: 234.743 ms.
+I0420 03:13:50.279492 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:50.279532 22149 data_layer.cpp:133]      Read time: 1.101 ms.
+I0420 03:13:50.279537 22149 data_layer.cpp:134] Transform time: 237.131 ms.
+I0420 03:13:50.520373 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:50.520416 22149 data_layer.cpp:133]      Read time: 1.131 ms.
+I0420 03:13:50.520419 22149 data_layer.cpp:134] Transform time: 238.648 ms.
+I0420 03:13:50.759114 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:50.759161 22149 data_layer.cpp:133]      Read time: 1.113 ms.
+I0420 03:13:50.759166 22149 data_layer.cpp:134] Transform time: 236.496 ms.
+I0420 03:13:50.998106 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:50.998149 22149 data_layer.cpp:133]      Read time: 1.119 ms.
+I0420 03:13:50.998154 22149 data_layer.cpp:134] Transform time: 236.649 ms.
+I0420 03:13:51.237814 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:51.237857 22149 data_layer.cpp:133]      Read time: 1.109 ms.
+I0420 03:13:51.237862 22149 data_layer.cpp:134] Transform time: 237.441 ms.
+I0420 03:13:51.475556 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:51.475596 22149 data_layer.cpp:133]      Read time: 1.151 ms.
+I0420 03:13:51.475600 22149 data_layer.cpp:134] Transform time: 235.317 ms.
+I0420 03:13:51.715512 22149 data_layer.cpp:132] Prefetch batch: 239 ms.
+I0420 03:13:51.715555 22149 data_layer.cpp:133]      Read time: 1.106 ms.
+I0420 03:13:51.715560 22149 data_layer.cpp:134] Transform time: 237.643 ms.
+I0420 03:13:51.953372 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:51.953418 22149 data_layer.cpp:133]      Read time: 1.077 ms.
+I0420 03:13:51.953423 22149 data_layer.cpp:134] Transform time: 235.621 ms.
+I0420 03:13:52.193794 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:52.193836 22149 data_layer.cpp:133]      Read time: 1.078 ms.
+I0420 03:13:52.193840 22149 data_layer.cpp:134] Transform time: 238.015 ms.
+I0420 03:13:52.432453 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:52.432494 22149 data_layer.cpp:133]      Read time: 1.103 ms.
+I0420 03:13:52.432498 22149 data_layer.cpp:134] Transform time: 236.465 ms.
+I0420 03:13:52.671142 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:52.671185 22149 data_layer.cpp:133]      Read time: 1.119 ms.
+I0420 03:13:52.671190 22149 data_layer.cpp:134] Transform time: 236.353 ms.
+I0420 03:13:52.911865 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:52.911906 22149 data_layer.cpp:133]      Read time: 1.133 ms.
+I0420 03:13:52.911911 22149 data_layer.cpp:134] Transform time: 238.411 ms.
+I0420 03:13:53.153792 22149 data_layer.cpp:132] Prefetch batch: 241 ms.
+I0420 03:13:53.153842 22149 data_layer.cpp:133]      Read time: 1.127 ms.
+I0420 03:13:53.153847 22149 data_layer.cpp:134] Transform time: 239.601 ms.
+I0420 03:13:53.392534 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:53.392581 22149 data_layer.cpp:133]      Read time: 1.081 ms.
+I0420 03:13:53.392586 22149 data_layer.cpp:134] Transform time: 236.496 ms.
+I0420 03:13:53.633040 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:53.633081 22149 data_layer.cpp:133]      Read time: 1.09 ms.
+I0420 03:13:53.633085 22149 data_layer.cpp:134] Transform time: 238.275 ms.
+I0420 03:13:53.871626 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:53.871670 22149 data_layer.cpp:133]      Read time: 1.106 ms.
+I0420 03:13:53.871675 22149 data_layer.cpp:134] Transform time: 236.196 ms.
+I0420 03:13:54.110390 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:54.110435 22149 data_layer.cpp:133]      Read time: 1.104 ms.
+I0420 03:13:54.110440 22149 data_layer.cpp:134] Transform time: 236.5 ms.
+I0420 03:13:54.348304 22149 data_layer.cpp:132] Prefetch batch: 237 ms.
+I0420 03:13:54.348347 22149 data_layer.cpp:133]      Read time: 1.104 ms.
+I0420 03:13:54.348351 22149 data_layer.cpp:134] Transform time: 235.676 ms.
+I0420 03:13:54.588621 22149 data_layer.cpp:132] Prefetch batch: 240 ms.
+I0420 03:13:54.588662 22149 data_layer.cpp:133]      Read time: 1.142 ms.
+I0420 03:13:54.588666 22149 data_layer.cpp:134] Transform time: 238.051 ms.
+/usr/lib64/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for caffe::SolverParameter already registered; second conversion method ignored.
+  return f(*args, **kwds)
+/usr/lib64/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for std::vector<int, std::allocator<int> > already registered; second conversion method ignored.
+  return f(*args, **kwds)
+../../caffe_gt/python/caffe/__init__.py:30: UserWarning: Caffe datatype DOUBLE not available.
+  warnings.warn("Caffe datatype DOUBLE not available.")
+7
+[0.8203125]
+[0.78125]
+[0.7421875]
+[0.8125]
+[0.84375]
+[0.8125]
+[0.7578125]
+[0.8125]
+[0.84375]
+[0.8359375]
+[0.78125]
+[0.796875]
+[0.78125]
+[0.8125]
+[0.828125]
+[0.7421875]
+[0.796875]
+[0.8125]
+[0.8125]
+[0.8125]
+[0.7578125]
+[0.8203125]
+[0.84375]
+[0.8046875]
+[0.8203125]
+[0.828125]
+[0.765625]
+[0.8359375]
+[0.71875]
+[0.8203125]
+[0.7890625]
+[0.8203125]
+[0.828125]
+[0.8203125]
+[0.8125]
+[0.7265625]
+[0.7890625]
+[0.8125]
+[0.796875]
+[0.78125]
+[0.8359375]
+[0.8359375]
+[0.78125]
+[0.8203125]
+[0.8046875]
+[0.7890625]
+[0.796875]
+[0.8046875]
+[0.8046875]
+[0.7734375]
+[0.8359375]
+[0.75]
+[0.8515625]
+[0.8203125]
+[0.78125]
+[0.78125]
+[0.765625]
+[0.8046875]
+[0.828125]
+[0.8828125]
+[0.8125]
+[0.7421875]
+[0.8125]
+[0.828125]
+[0.8203125]
+[0.828125]
+[0.75]
+[0.7890625]
+[0.8046875]
+[0.78125]
+[0.828125]
+[0.8515625]
+[0.8046875]
+[0.796875]
+[0.7734375]
+[0.796875]
+[0.78125]
+[0.7578125]
+[0.8046875]
+[0.828125]
+[0.8046875]
+[0.734375]
+[0.8046875]
+[0.7734375]
+[0.78125]
+[0.8515625]
+[0.8203125]
+[0.8203125]
+[0.6953125]
+[0.78125]
+[0.78125]
+[0.796875]
+[0.8515625]
+[0.8828125]
+[0.859375]
+[0.8125]
+[0.8671875]
+[0.859375]
+[0.78125]
+[0.7890625]
+[0.7578125]
+[0.75]
+[0.7890625]
+[0.8203125]
+[0.7890625]
+[0.796875]
+[0.828125]
+[0.828125]
+[0.84375]
+[0.859375]
+[0.71875]
+[0.7578125]
+[0.8359375]
+[0.7734375]
+[0.7109375]
+[0.8203125]
+[0.796875]
+[0.765625]
+[0.828125]
+[0.8125]
+[0.8125]
+[0.828125]
+[0.8359375]
+[0.8125]
+[0.8046875]
+[0.765625]
+[0.78125]
+[0.796875]
+[0.7734375]
+[0.859375]
+[0.84375]
+[0.796875]
+[0.7578125]
+[0.7890625]
+[0.7578125]
+[0.875]
+[0.84375]
+[0.8359375]
+[0.8125]
+[0.78125]
+[0.7421875]
+[0.765625]
+[0.8203125]
+cl_get_gt_device(): error, unknown device: 0
+Traceback (most recent call last):
+  File "./imagenet_test.py", line 12, in <module>
+    testnet.forward()
+  File "../../caffe_gt/python/caffe/pycaffe.py", line 167, in _Net_forward
+    self._forward(start_ind, end_ind)
+KeyboardInterrupt
+I0420 03:13:54.827540 22149 data_layer.cpp:132] Prefetch batch: 238 ms.
+I0420 03:13:54.827585 22149 data_layer.cpp:133]      Read time: 1.103 ms.
+I0420 03:13:54.827591 22149 data_layer.cpp:134] Transform time: 236.519 ms.

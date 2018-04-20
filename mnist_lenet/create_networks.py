@@ -20,26 +20,26 @@ for data_type in zip(data_types, data_types_names):
                               top_data_type = data_type[0],
                               param=[dict(lr_mult=1), dict(lr_mult=2)],
                               convolution_param=dict(num_output=20,kernel_size=5,stride=1,
-                                                    weight_filler=dict(type='xavier')),
-                                                    bias_filler=dict(type='constant'))
+                                                     weight_filler=dict(type='xavier'),
+                                                     bias_filler=dict(type='constant')))
     net.pool1 = L.Pooling(net.conv1,
                           bottom_data_type = data_type[0],
                           compute_data_type = data_type[0],
                           top_data_type = data_type[0],
-                          pooling_param=dict(pool=0,kernel_size=2,stride=2))
+                          pooling_param=dict(pool=P.Pooling.MAX,kernel_size=2,stride=2))
     net.conv2 = L.Convolution(net.pool1,
                               bottom_data_type = data_type[0],
                               compute_data_type = data_type[0],
                               top_data_type = data_type[0],
                               param=[dict(lr_mult=1), dict(lr_mult=2)],
                               convolution_param=dict(num_output=50,kernel_size=5,stride=1,
-                                                    weight_filler=dict(type='xavier')),
-                                                    bias_filler=dict(type='constant'))
+                                                     weight_filler=dict(type='xavier'),
+                                                     bias_filler=dict(type='constant')))
     net.pool2 = L.Pooling(net.conv2,
                           bottom_data_type = data_type[0],
                           compute_data_type = data_type[0],
                           top_data_type = data_type[0],
-                          pooling_param=dict(pool=0,kernel_size=2,stride=2))
+                          pooling_param=dict(pool=P.Pooling.MAX,kernel_size=2,stride=2))
     
     net.ip1 = L.InnerProduct(net.pool2,
                              bottom_data_type = data_type[0],

@@ -3,6 +3,9 @@ from __future__ import print_function
 # Specify where PyCaffe is
 caffe_path = '../../caffe_gt/python'
 
+# Specify where the perpared ILSVRC2012 data is
+imagenet_data = '/media/scratch/ILSVRC2012/data/'
+
 # Import Numpy and Caffe plus a few other utilities
 import sys, os, math, random, time, urllib, gzip
 import numpy as np
@@ -27,4 +30,4 @@ caffe.set_mode_gpu()
 print(caffe.enumerate_devices(True))
 
 # Select the GPU
-caffe.set_device(0)
+caffe.set_device(2)
