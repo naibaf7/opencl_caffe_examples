@@ -87,6 +87,9 @@ layer {
   type: "Pooling"
   bottom: "relu1"
   top: "pool1"
+  bottom_data_type: CAFFE_FLOAT
+  compute_data_type: CAFFE_FLOAT
+  top_data_type: CAFFE_FLOAT
   pooling_param {
     pool: MAX
     kernel_size: 3

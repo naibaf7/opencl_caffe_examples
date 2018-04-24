@@ -87,6 +87,9 @@ layer {
   type: "Pooling"
   bottom: "relu1"
   top: "pool1"
+  bottom_data_type: CAFFE_INT8_QUANTIZED
+  compute_data_type: CAFFE_INT8_QUANTIZED
+  top_data_type: CAFFE_INT8_QUANTIZED
   pooling_param {
     pool: MAX
     kernel_size: 3
