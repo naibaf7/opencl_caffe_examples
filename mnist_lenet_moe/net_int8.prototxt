@@ -1,0 +1,1090 @@
+name: "net"
+layer {
+  name: "mnist_image"
+  type: "Input"
+  top: "mnist_image"
+  input_param {
+    shape {
+      dim: 128
+      dim: 1
+      dim: 28
+      dim: 28
+    }
+  }
+}
+layer {
+  name: "label"
+  type: "Input"
+  top: "label"
+  input_param {
+    shape {
+      dim: 128
+      dim: 1
+      dim: 1
+      dim: 1
+    }
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "mnist_image"
+  top: "conv1"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  bottom_data_type: CAFFE_INT8_QUANTIZED
+  compute_data_type: CAFFE_INT8_QUANTIZED
+  top_data_type: CAFFE_INT8_QUANTIZED
+  convolution_param {
+    num_output: 10
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv1"
+  top: "pool1"
+  bottom_data_type: CAFFE_INT8_QUANTIZED
+  compute_data_type: CAFFE_INT8_QUANTIZED
+  top_data_type: CAFFE_INT8_QUANTIZED
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "moe"
+  type: "MOE"
+  bottom: "pool1"
+  top: "moe"
+  top: "observed_count"
+  top: "expected_count"
+  bottom_data_type: CAFFE_INT8_QUANTIZED
+  compute_data_type: CAFFE_INT8_QUANTIZED
+  top_data_type: CAFFE_FLOAT
+  moe_param {
+    gating_net {
+      layer {
+        name: "ga_input"
+        type: "Input"
+        top: "ga_input"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        input_param {
+          shape {
+            dim: 1
+            dim: 10
+            dim: 12
+            dim: 12
+          }
+        }
+      }
+      layer {
+        name: "ga_ip1"
+        type: "InnerProduct"
+        bottom: "ga_input"
+        top: "ga_ip1"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        inner_product_param {
+          num_output: 25
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ga_relu1"
+        type: "ReLU"
+        bottom: "ga_ip1"
+        top: "ga_relu1"
+      }
+      layer {
+        name: "ga_ip2"
+        type: "InnerProduct"
+        bottom: "ga_relu1"
+        top: "ga_ip2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        inner_product_param {
+          num_output: 9
+          weight_filler {
+            type: "constant"
+            value: 0.10000000149011612
+          }
+          bias_filler {
+            type: "constant"
+            value: 0.0
+          }
+        }
+      }
+      layer {
+        name: "ga_ip3"
+        type: "InnerProduct"
+        bottom: "ga_relu1"
+        top: "ga_ip3"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 0.0
+        }
+        inner_product_param {
+          num_output: 9
+          weight_filler {
+            type: "constant"
+            value: 0.10000000149011612
+          }
+          bias_filler {
+            type: "constant"
+            value: 0.0
+          }
+        }
+      }
+      layer {
+        name: "ga_relu2"
+        type: "ReLU"
+        bottom: "ga_ip3"
+        top: "ga_relu2"
+      }
+      layer {
+        name: "ga_noise"
+        type: "Noise"
+        bottom: "ga_relu2"
+        top: "ga_noise"
+        noise_param {
+          mu: 0.0
+          sigma: 0.10000000149011612
+        }
+      }
+      layer {
+        name: "ga_eltwise"
+        type: "Eltwise"
+        bottom: "ga_ip2"
+        bottom: "ga_noise"
+        top: "ga_eltwise"
+      }
+      layer {
+        name: "ga_softmax"
+        type: "Softmax"
+        bottom: "ga_eltwise"
+        top: "ga_softmax"
+      }
+    }
+    expert_net {
+      layer {
+        name: "ex_0_input"
+        type: "Input"
+        top: "ex_0_input"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        input_param {
+          shape {
+            dim: 1
+            dim: 10
+            dim: 12
+            dim: 12
+          }
+        }
+      }
+      layer {
+        name: "ex_0_conv2"
+        type: "Convolution"
+        bottom: "ex_0_input"
+        top: "ex_0_conv2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        convolution_param {
+          num_output: 5
+          kernel_size: 5
+          stride: 1
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_0_pool2"
+        type: "Pooling"
+        bottom: "ex_0_conv2"
+        top: "ex_0_pool2"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        pooling_param {
+          pool: MAX
+          kernel_size: 2
+          stride: 2
+        }
+      }
+      layer {
+        name: "ex_0_ip2"
+        type: "InnerProduct"
+        bottom: "ex_0_pool2"
+        top: "ex_0_ip2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        inner_product_param {
+          num_output: 25
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_0_qu"
+        type: "Quantizer"
+        bottom: "ex_0_ip2"
+        top: "ex_0_qu"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_FLOAT
+      }
+    }
+    expert_net {
+      layer {
+        name: "ex_1_input"
+        type: "Input"
+        top: "ex_1_input"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        input_param {
+          shape {
+            dim: 1
+            dim: 10
+            dim: 12
+            dim: 12
+          }
+        }
+      }
+      layer {
+        name: "ex_1_conv2"
+        type: "Convolution"
+        bottom: "ex_1_input"
+        top: "ex_1_conv2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        convolution_param {
+          num_output: 5
+          kernel_size: 5
+          stride: 1
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_1_pool2"
+        type: "Pooling"
+        bottom: "ex_1_conv2"
+        top: "ex_1_pool2"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        pooling_param {
+          pool: MAX
+          kernel_size: 2
+          stride: 2
+        }
+      }
+      layer {
+        name: "ex_1_ip2"
+        type: "InnerProduct"
+        bottom: "ex_1_pool2"
+        top: "ex_1_ip2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        inner_product_param {
+          num_output: 25
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_1_qu"
+        type: "Quantizer"
+        bottom: "ex_1_ip2"
+        top: "ex_1_qu"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_FLOAT
+      }
+    }
+    expert_net {
+      layer {
+        name: "ex_2_input"
+        type: "Input"
+        top: "ex_2_input"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        input_param {
+          shape {
+            dim: 1
+            dim: 10
+            dim: 12
+            dim: 12
+          }
+        }
+      }
+      layer {
+        name: "ex_2_conv2"
+        type: "Convolution"
+        bottom: "ex_2_input"
+        top: "ex_2_conv2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        convolution_param {
+          num_output: 5
+          kernel_size: 5
+          stride: 1
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_2_pool2"
+        type: "Pooling"
+        bottom: "ex_2_conv2"
+        top: "ex_2_pool2"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        pooling_param {
+          pool: MAX
+          kernel_size: 2
+          stride: 2
+        }
+      }
+      layer {
+        name: "ex_2_ip2"
+        type: "InnerProduct"
+        bottom: "ex_2_pool2"
+        top: "ex_2_ip2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        inner_product_param {
+          num_output: 25
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_2_qu"
+        type: "Quantizer"
+        bottom: "ex_2_ip2"
+        top: "ex_2_qu"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_FLOAT
+      }
+    }
+    expert_net {
+      layer {
+        name: "ex_3_input"
+        type: "Input"
+        top: "ex_3_input"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        input_param {
+          shape {
+            dim: 1
+            dim: 10
+            dim: 12
+            dim: 12
+          }
+        }
+      }
+      layer {
+        name: "ex_3_conv2"
+        type: "Convolution"
+        bottom: "ex_3_input"
+        top: "ex_3_conv2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        convolution_param {
+          num_output: 5
+          kernel_size: 5
+          stride: 1
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_3_pool2"
+        type: "Pooling"
+        bottom: "ex_3_conv2"
+        top: "ex_3_pool2"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        pooling_param {
+          pool: MAX
+          kernel_size: 2
+          stride: 2
+        }
+      }
+      layer {
+        name: "ex_3_ip2"
+        type: "InnerProduct"
+        bottom: "ex_3_pool2"
+        top: "ex_3_ip2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        inner_product_param {
+          num_output: 25
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_3_qu"
+        type: "Quantizer"
+        bottom: "ex_3_ip2"
+        top: "ex_3_qu"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_FLOAT
+      }
+    }
+    expert_net {
+      layer {
+        name: "ex_4_input"
+        type: "Input"
+        top: "ex_4_input"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        input_param {
+          shape {
+            dim: 1
+            dim: 10
+            dim: 12
+            dim: 12
+          }
+        }
+      }
+      layer {
+        name: "ex_4_conv2"
+        type: "Convolution"
+        bottom: "ex_4_input"
+        top: "ex_4_conv2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        convolution_param {
+          num_output: 5
+          kernel_size: 5
+          stride: 1
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_4_pool2"
+        type: "Pooling"
+        bottom: "ex_4_conv2"
+        top: "ex_4_pool2"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        pooling_param {
+          pool: MAX
+          kernel_size: 2
+          stride: 2
+        }
+      }
+      layer {
+        name: "ex_4_ip2"
+        type: "InnerProduct"
+        bottom: "ex_4_pool2"
+        top: "ex_4_ip2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        inner_product_param {
+          num_output: 25
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_4_qu"
+        type: "Quantizer"
+        bottom: "ex_4_ip2"
+        top: "ex_4_qu"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_FLOAT
+      }
+    }
+    expert_net {
+      layer {
+        name: "ex_5_input"
+        type: "Input"
+        top: "ex_5_input"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        input_param {
+          shape {
+            dim: 1
+            dim: 10
+            dim: 12
+            dim: 12
+          }
+        }
+      }
+      layer {
+        name: "ex_5_conv2"
+        type: "Convolution"
+        bottom: "ex_5_input"
+        top: "ex_5_conv2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        convolution_param {
+          num_output: 5
+          kernel_size: 5
+          stride: 1
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_5_pool2"
+        type: "Pooling"
+        bottom: "ex_5_conv2"
+        top: "ex_5_pool2"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        pooling_param {
+          pool: MAX
+          kernel_size: 2
+          stride: 2
+        }
+      }
+      layer {
+        name: "ex_5_ip2"
+        type: "InnerProduct"
+        bottom: "ex_5_pool2"
+        top: "ex_5_ip2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        inner_product_param {
+          num_output: 25
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_5_qu"
+        type: "Quantizer"
+        bottom: "ex_5_ip2"
+        top: "ex_5_qu"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_FLOAT
+      }
+    }
+    expert_net {
+      layer {
+        name: "ex_6_input"
+        type: "Input"
+        top: "ex_6_input"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        input_param {
+          shape {
+            dim: 1
+            dim: 10
+            dim: 12
+            dim: 12
+          }
+        }
+      }
+      layer {
+        name: "ex_6_conv2"
+        type: "Convolution"
+        bottom: "ex_6_input"
+        top: "ex_6_conv2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        convolution_param {
+          num_output: 5
+          kernel_size: 5
+          stride: 1
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_6_pool2"
+        type: "Pooling"
+        bottom: "ex_6_conv2"
+        top: "ex_6_pool2"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        pooling_param {
+          pool: MAX
+          kernel_size: 2
+          stride: 2
+        }
+      }
+      layer {
+        name: "ex_6_ip2"
+        type: "InnerProduct"
+        bottom: "ex_6_pool2"
+        top: "ex_6_ip2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        inner_product_param {
+          num_output: 25
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_6_qu"
+        type: "Quantizer"
+        bottom: "ex_6_ip2"
+        top: "ex_6_qu"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_FLOAT
+      }
+    }
+    expert_net {
+      layer {
+        name: "ex_7_input"
+        type: "Input"
+        top: "ex_7_input"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        input_param {
+          shape {
+            dim: 1
+            dim: 10
+            dim: 12
+            dim: 12
+          }
+        }
+      }
+      layer {
+        name: "ex_7_conv2"
+        type: "Convolution"
+        bottom: "ex_7_input"
+        top: "ex_7_conv2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        convolution_param {
+          num_output: 5
+          kernel_size: 5
+          stride: 1
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_7_pool2"
+        type: "Pooling"
+        bottom: "ex_7_conv2"
+        top: "ex_7_pool2"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        pooling_param {
+          pool: MAX
+          kernel_size: 2
+          stride: 2
+        }
+      }
+      layer {
+        name: "ex_7_ip2"
+        type: "InnerProduct"
+        bottom: "ex_7_pool2"
+        top: "ex_7_ip2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        inner_product_param {
+          num_output: 25
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_7_qu"
+        type: "Quantizer"
+        bottom: "ex_7_ip2"
+        top: "ex_7_qu"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_FLOAT
+      }
+    }
+    expert_net {
+      layer {
+        name: "ex_8_input"
+        type: "Input"
+        top: "ex_8_input"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        input_param {
+          shape {
+            dim: 1
+            dim: 10
+            dim: 12
+            dim: 12
+          }
+        }
+      }
+      layer {
+        name: "ex_8_conv2"
+        type: "Convolution"
+        bottom: "ex_8_input"
+        top: "ex_8_conv2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        convolution_param {
+          num_output: 5
+          kernel_size: 5
+          stride: 1
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_8_pool2"
+        type: "Pooling"
+        bottom: "ex_8_conv2"
+        top: "ex_8_pool2"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        pooling_param {
+          pool: MAX
+          kernel_size: 2
+          stride: 2
+        }
+      }
+      layer {
+        name: "ex_8_ip2"
+        type: "InnerProduct"
+        bottom: "ex_8_pool2"
+        top: "ex_8_ip2"
+        param {
+          lr_mult: 1.0
+        }
+        param {
+          lr_mult: 2.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        inner_product_param {
+          num_output: 25
+          weight_filler {
+            type: "xavier"
+          }
+          bias_filler {
+            type: "constant"
+          }
+        }
+      }
+      layer {
+        name: "ex_8_qu"
+        type: "Quantizer"
+        bottom: "ex_8_ip2"
+        top: "ex_8_qu"
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_FLOAT
+      }
+    }
+    select_experts: 3
+  }
+}
+layer {
+  name: "reg"
+  type: "EuclideanLoss"
+  bottom: "observed_count"
+  bottom: "expected_count"
+  top: "reg"
+  loss_weight: 50.0
+  include {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "silence"
+  type: "Silence"
+  bottom: "observed_count"
+  bottom: "expected_count"
+  include {
+    phase: TEST
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "moe"
+  top: "relu1"
+}
+layer {
+  name: "ip2"
+  type: "InnerProduct"
+  bottom: "relu1"
+  top: "ip2"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "ip2"
+  bottom: "label"
+  top: "loss"
+  include {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "pred"
+  type: "Softmax"
+  bottom: "ip2"
+  top: "pred"
+  include {
+    phase: TEST
+  }
+}
+

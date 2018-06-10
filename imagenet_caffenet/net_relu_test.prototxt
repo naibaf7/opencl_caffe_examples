@@ -1,0 +1,31 @@
+name: "net"
+layer {
+  name: "data"
+  type: "Input"
+  top: "data"
+  bottom_data_type: CAFFE_FLOAT
+  compute_data_type: CAFFE_FLOAT
+  top_data_type: CAFFE_FLOAT
+  input_param {
+    shape {
+      dim: 64
+      dim: 128
+      dim: 256
+      dim: 256
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "data"
+  top: "relu1"
+  bottom_data_type: CAFFE_INT8_QUANTIZED
+  compute_data_type: CAFFE_INT8_QUANTIZED
+  top_data_type: CAFFE_INT8_QUANTIZED
+}
+layer {
+  name: "silence"
+  type: "Silence"
+  bottom: "relu1"
+}

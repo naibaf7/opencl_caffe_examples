@@ -1,0 +1,63 @@
+Persistent storage path: /home/fabian/.local/share/caffe
+CUDA compile log:
+default_program(93): error: more than one instance of overloaded function "abs" matches the argument list:
+            function "abs(int)"
+            function "abs(long long)"
+            function "abs(long)"
+            function "abs(float)"
+            function "abs(double)"
+            argument types are: (const unsigned int)
+
+default_program(120): error: more than one instance of overloaded function "abs" matches the argument list:
+            function "abs(int)"
+            function "abs(long long)"
+            function "abs(long)"
+            function "abs(float)"
+            function "abs(double)"
+            argument types are: (const unsigned int)
+
+default_program(126): warning: pointless comparison of unsigned integer with zero
+
+default_program(132): warning: pointless comparison of unsigned integer with zero
+
+2 errors detected in the compilation of "default_program".
+
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+E0608 07:55:42.594841  9993 cuda_device_program.cpp:123] Failed to compile CUDA binary (7d650780a1c32bba) from code (CUDA_ERROR_INVALID_IMAGE)
+CUDA compile log:
+default_program(93): error: more than one instance of overloaded function "abs" matches the argument list:
+            function "abs(int)"
+            function "abs(long long)"
+            function "abs(long)"
+            function "abs(float)"
+            function "abs(double)"
+            argument types are: (const unsigned long long)
+
+default_program(120): error: more than one instance of overloaded function "abs" matches the argument list:
+            function "abs(int)"
+            function "abs(long long)"
+            function "abs(long)"
+            function "abs(float)"
+            function "abs(double)"
+            argument types are: (const unsigned long long)
+
+default_program(126): warning: pointless comparison of unsigned integer with zero
+
+default_program(132): warning: pointless comparison of unsigned integer with zero
+
+2 errors detected in the compilation of "default_program".
+
+E0608 07:55:42.672494  9993 cuda_device_program.cpp:123] Failed to compile CUDA binary (1a8db93887918d88) from code (CUDA_ERROR_INVALID_IMAGE)
+/usr/lib64/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for caffe::SolverParameter already registered; second conversion method ignored.
+  return f(*args, **kwds)
+/usr/lib64/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: to-Python converter for std::vector<int, std::allocator<int> > already registered; second conversion method ignored.
+  return f(*args, **kwds)
+../../caffe_gt/python/caffe/__init__.py:30: UserWarning: Caffe datatype DOUBLE not available.
+  warnings.warn("Caffe datatype DOUBLE not available.")
+5
+Traceback (most recent call last):
+  File "mnist_train.py", line 3, in <module>
+    from caffe_examples_setup import *
+  File "../caffe_examples_setup.py", line 33, in <module>
+    caffe.set_device(0)
+KeyboardInterrupt

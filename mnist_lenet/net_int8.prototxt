@@ -1,4 +1,5 @@
 name: "net"
+reduced_memory_inference: false
 layer {
   name: "mnist_image"
   type: "Input"

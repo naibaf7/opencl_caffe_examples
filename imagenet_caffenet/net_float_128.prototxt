@@ -1,4 +1,5 @@
 name: "net"
+reduced_memory_inference: true
 layer {
   name: "data"
   type: "Data"
@@ -49,27 +50,24 @@ layer {
   bottom: "data"
   top: "conv1"
   param {
-    lr_mult: 1.0
-    decay_mult: 1.0
+    lr_mult: 1
+    decay_mult: 1
   }
   param {
-    lr_mult: 2.0
-    decay_mult: 0.0
+    lr_mult: 2
+    decay_mult: 0
   }
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   convolution_param {
     num_output: 96
     kernel_size: 11
     stride: 4
     weight_filler {
       type: "gaussian"
-      std: 0.009999999776482582
+      std: 0.01
     }
     bias_filler {
       type: "constant"
-      value: 0.0
+      value: 0
     }
   }
 }
@@ -77,19 +75,13 @@ layer {
   name: "relu1"
   type: "ReLU"
   bottom: "conv1"
-  top: "relu1"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
+  top: "conv1"
 }
 layer {
   name: "pool1"
   type: "Pooling"
-  bottom: "relu1"
+  bottom: "conv1"
   top: "pool1"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   pooling_param {
     pool: MAX
     kernel_size: 3
@@ -101,12 +93,9 @@ layer {
   type: "LRN"
   bottom: "pool1"
   top: "norm1"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   lrn_param {
     local_size: 5
-    alpha: 9.999999747378752e-05
+    alpha: 0.0001
     beta: 0.75
   }
 }
@@ -116,16 +105,13 @@ layer {
   bottom: "norm1"
   top: "conv2"
   param {
-    lr_mult: 1.0
-    decay_mult: 1.0
+    lr_mult: 1
+    decay_mult: 1
   }
   param {
-    lr_mult: 2.0
-    decay_mult: 0.0
+    lr_mult: 2
+    decay_mult: 0
   }
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   convolution_param {
     num_output: 256
     pad: 2
@@ -133,11 +119,11 @@ layer {
     group: 2
     weight_filler {
       type: "gaussian"
-      std: 0.009999999776482582
+      std: 0.01
     }
     bias_filler {
       type: "constant"
-      value: 1.0
+      value: 0.5
     }
   }
 }
@@ -145,19 +131,13 @@ layer {
   name: "relu2"
   type: "ReLU"
   bottom: "conv2"
-  top: "relu2"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
+  top: "conv2"
 }
 layer {
   name: "pool2"
   type: "Pooling"
-  bottom: "relu2"
+  bottom: "conv2"
   top: "pool2"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   pooling_param {
     pool: MAX
     kernel_size: 3
@@ -169,12 +149,9 @@ layer {
   type: "LRN"
   bottom: "pool2"
   top: "norm2"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   lrn_param {
     local_size: 5
-    alpha: 9.999999747378752e-05
+    alpha: 0.0001
     beta: 0.75
   }
 }
@@ -184,27 +161,24 @@ layer {
   bottom: "norm2"
   top: "conv3"
   param {
-    lr_mult: 1.0
-    decay_mult: 1.0
+    lr_mult: 1
+    decay_mult: 1
   }
   param {
-    lr_mult: 2.0
-    decay_mult: 0.0
+    lr_mult: 2
+    decay_mult: 0
   }
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   convolution_param {
     num_output: 384
     pad: 1
     kernel_size: 3
     weight_filler {
       type: "gaussian"
-      std: 0.009999999776482582
+      std: 0.01
     }
     bias_filler {
       type: "constant"
-      value: 0.0
+      value: 0
     }
   }
 }
@@ -212,27 +186,21 @@ layer {
   name: "relu3"
   type: "ReLU"
   bottom: "conv3"
-  top: "relu3"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
+  top: "conv3"
 }
 layer {
   name: "conv4"
   type: "Convolution"
-  bottom: "relu3"
+  bottom: "conv3"
   top: "conv4"
   param {
-    lr_mult: 1.0
-    decay_mult: 1.0
+    lr_mult: 1
+    decay_mult: 1
   }
   param {
-    lr_mult: 2.0
-    decay_mult: 0.0
+    lr_mult: 2
+    decay_mult: 0
   }
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   convolution_param {
     num_output: 384
     pad: 1
@@ -240,11 +208,11 @@ layer {
     group: 2
     weight_filler {
       type: "gaussian"
-      std: 0.009999999776482582
+      std: 0.01
     }
     bias_filler {
       type: "constant"
-      value: 1.0
+      value: 0.5
     }
   }
 }
@@ -252,27 +220,21 @@ layer {
   name: "relu4"
   type: "ReLU"
   bottom: "conv4"
-  top: "relu4"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
+  top: "conv4"
 }
 layer {
   name: "conv5"
   type: "Convolution"
-  bottom: "relu4"
+  bottom: "conv4"
   top: "conv5"
   param {
-    lr_mult: 1.0
-    decay_mult: 1.0
+    lr_mult: 1
+    decay_mult: 1
   }
   param {
-    lr_mult: 2.0
-    decay_mult: 0.0
+    lr_mult: 2
+    decay_mult: 0
   }
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   convolution_param {
     num_output: 256
     pad: 1
@@ -280,11 +242,11 @@ layer {
     group: 2
     weight_filler {
       type: "gaussian"
-      std: 0.009999999776482582
+      std: 0.01
     }
     bias_filler {
       type: "constant"
-      value: 1.0
+      value: 0.5
     }
   }
 }
@@ -292,19 +254,13 @@ layer {
   name: "relu5"
   type: "ReLU"
   bottom: "conv5"
-  top: "relu5"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
+  top: "conv5"
 }
 layer {
   name: "pool5"
   type: "Pooling"
-  bottom: "relu5"
+  bottom: "conv5"
   top: "pool5"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   pooling_param {
     pool: MAX
     kernel_size: 3
@@ -317,25 +273,22 @@ layer {
   bottom: "pool5"
   top: "fc6"
   param {
-    lr_mult: 1.0
-    decay_mult: 1.0
+    lr_mult: 1
+    decay_mult: 1
   }
   param {
-    lr_mult: 2.0
-    decay_mult: 0.0
+    lr_mult: 2
+    decay_mult: 0
   }
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   inner_product_param {
     num_output: 4096
     weight_filler {
       type: "gaussian"
-      std: 0.004999999888241291
+      std: 0.005
     }
     bias_filler {
       type: "constant"
-      value: 1.0
+      value: 0.5
     }
   }
 }
@@ -343,19 +296,13 @@ layer {
   name: "relu6"
   type: "ReLU"
   bottom: "fc6"
-  top: "relu6"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
+  top: "fc6"
 }
 layer {
   name: "drop6"
   type: "Dropout"
-  bottom: "relu6"
-  top: "drop6"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
+  bottom: "fc6"
+  top: "fc6"
   dropout_param {
     dropout_ratio: 0.5
   }
@@ -363,28 +310,25 @@ layer {
 layer {
   name: "fc7"
   type: "InnerProduct"
-  bottom: "drop6"
+  bottom: "fc6"
   top: "fc7"
   param {
-    lr_mult: 1.0
-    decay_mult: 1.0
+    lr_mult: 1
+    decay_mult: 1
   }
   param {
-    lr_mult: 2.0
-    decay_mult: 0.0
+    lr_mult: 2
+    decay_mult: 0
   }
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   inner_product_param {
     num_output: 4096
     weight_filler {
       type: "gaussian"
-      std: 0.004999999888241291
+      std: 0.005
     }
     bias_filler {
       type: "constant"
-      value: 1.0
+      value: 0.5
     }
   }
 }
@@ -392,19 +336,13 @@ layer {
   name: "relu7"
   type: "ReLU"
   bottom: "fc7"
-  top: "relu7"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
+  top: "fc7"
 }
 layer {
   name: "drop7"
   type: "Dropout"
-  bottom: "relu7"
-  top: "drop7"
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
+  bottom: "fc7"
+  top: "fc7"
   dropout_param {
     dropout_ratio: 0.5
   }
@@ -412,39 +350,26 @@ layer {
 layer {
   name: "fc8"
   type: "InnerProduct"
-  bottom: "drop7"
+  bottom: "fc7"
   top: "fc8"
   param {
-    lr_mult: 1.0
-    decay_mult: 1.0
+    lr_mult: 1
+    decay_mult: 1
   }
   param {
-    lr_mult: 2.0
-    decay_mult: 0.0
+    lr_mult: 2
+    decay_mult: 0
   }
-  bottom_data_type: CAFFE_FLOAT
-  compute_data_type: CAFFE_FLOAT
-  top_data_type: CAFFE_FLOAT
   inner_product_param {
     num_output: 1000
     weight_filler {
       type: "gaussian"
-      std: 0.009999999776482582
+      std: 0.01
     }
     bias_filler {
       type: "constant"
-      value: 0.0
+      value: 0
     }
-  }
-}
-layer {
-  name: "loss"
-  type: "SoftmaxWithLoss"
-  bottom: "fc8"
-  bottom: "label"
-  top: "loss"
-  include {
-    phase: TRAIN
   }
 }
 layer {
@@ -456,8 +381,12 @@ layer {
   include {
     phase: TEST
   }
-  accuracy_param {
-    top_k: 5
-  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "fc8"
+  bottom: "label"
+  top: "loss"
 }
 

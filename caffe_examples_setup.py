@@ -24,10 +24,10 @@ from caffe import to_proto
 
 # Switch Caffe to GPU Mode
 caffe.set_mode_gpu()
-# caffe.set_mode_cpu()
+#caffe.set_mode_cpu()
 
 # Count available GPUs
 print(caffe.enumerate_devices(True))
 
 # Select the GPU
-caffe.set_device(2)
+caffe.set_device(0)
