@@ -52,7 +52,7 @@ for bs in range(0, 14):
         gating_net.ga_fc1 = L.InnerProduct(gating_net.ga_norm2,
                                            param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
                                            inner_product_param = dict(num_output=128,
-                                           weight_filler = dict(type='gaussian', std=0.1),
+                                           weight_filler = dict(type='gaussian', std=0.01),
                                            bias_filler = dict(type='constant', value=0.5)),
                                            bottom_data_type = data_type[0],
                                            compute_data_type = data_type[0],
@@ -66,9 +66,9 @@ for bs in range(0, 14):
     
     
         gating_net.ga_fc2 = L.InnerProduct(gating_net.ga_relu3,
-                                           param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
+                                           param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=0, decay_mult=0)],
                                            inner_product_param = dict(num_output=16,
-                                           weight_filler = dict(type='gaussian', std=0.1),
+                                           weight_filler = dict(type='gaussian', std=0.01),
                                            bias_filler = dict(type='constant', value=0.0)),
                                            bottom_data_type = data_type[0],
                                            compute_data_type = data_type[0],
@@ -77,7 +77,7 @@ for bs in range(0, 14):
         gating_net.ga_fc3 = L.InnerProduct(gating_net.ga_relu3,
                                            param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=0, decay_mult=0)],
                                            inner_product_param = dict(num_output=16,
-                                           weight_filler = dict(type='gaussian', std=0.1),
+                                           weight_filler = dict(type='gaussian', std=0.01),
                                            bias_filler = dict(type='constant', value=0.0)),
                                            bottom_data_type = data_type[0],
                                            compute_data_type = data_type[0],
@@ -85,11 +85,27 @@ for bs in range(0, 14):
                                        
         gating_net.ga_relu4 = L.ReLU(gating_net.ga_fc3, in_place=False)
     
-        gating_net.ga_noise = L.Noise(gating_net.ga_relu4, noise_param=dict(mu=0.0, sigma=0.1))
+        gating_net.ga_noise = L.Noise(gating_net.ga_relu4, noise_param=dict(mu=0.0, sigma=1.0))
     
-        gating_net.ga_eltwise = L.Eltwise(gating_net.ga_fc2, gating_net.ga_noise)
-    
-        gating_net.ga_softmax = L.Softmax(gating_net.ga_eltwise)
+        gating_net.ga_eltwise1 = L.Eltwise(gating_net.ga_fc2, gating_net.ga_noise)
+        
+        gating_net.ga_dummy = L.DummyData(data_filler=dict(type='gaussian', std=10.0),
+                                          dummy_data_param = dict(shape=dict(dim=[bss,16,1,1])))
+        
+        gating_net.ga_dummy_conv = L.Convolution(gating_net.ga_dummy,
+                                                 bottom_data_type = data_type[0],
+                                                 compute_data_type = data_type[0],
+                                                 top_data_type = data_type[0],
+                                                 param=[dict(lr_mult=0.00001, decay_mult=1.0), dict(lr_mult=0, decay_mult=0)],
+                                                 convolution_param=dict(num_output=16, pad=0, kernel_size=1, group=16,
+                                                                      weight_filler=dict(type='constant', value=1.0),
+                                                                      bias_filler=dict(type='constant', value=0.0)))
+          
+        gating_net.ga_dummy_reshaped = L.Reshape(gating_net.ga_dummy_conv, reshape_param = dict(shape=dict(dim=[bss,16])))
+        
+        gating_net.ga_eltwise2 = L.Eltwise(gating_net.ga_eltwise1, gating_net.ga_dummy_reshaped)
+            
+        gating_net.ga_softmax = L.Softmax(gating_net.ga_eltwise2)
     
     
         expert_nets = [caffe.NetSpec() for i in range(0, 16)]
@@ -183,7 +199,7 @@ for bs in range(0, 14):
                                                                         top_data_type = data_type[0],
                                                                         param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
                                                                         inner_product_param = dict(num_output=1024,
-                                                                                                   weight_filler = dict(type='gaussian', std=0.005),
+                                                                                                   weight_filler = dict(type='gaussian', std=0.01),
                                                                                                    bias_filler = dict(type='constant', value=0.5))))
             
             setattr(expert_net, 'ex_'+str(exidx)+'_relu6', L.ReLU(getattr(expert_net, 'ex_'+str(exidx)+'_fc6'), in_place=False,
@@ -191,20 +207,21 @@ for bs in range(0, 14):
                                                                   compute_data_type = data_type[0],
                                                                   top_data_type = data_type[0]))
             
-            setattr(expert_net, 'ex_'+str(exidx)+'_drop6', L.Dropout(getattr(expert_net, 'ex_'+str(exidx)+'_relu6'), in_place = False,
+            setattr(expert_net, 'ex_'+str(exidx)+'_drop6', L.Dropout(getattr(expert_net, 'ex_'+str(exidx)+'_relu6'), in_place=True,
                                                                      bottom_data_type = data_type[0],
                                                                      compute_data_type = data_type[0],
                                                                      top_data_type = data_type[0],
                                                                      dropout_param = dict(dropout_ratio=0.5)))
             
-            setattr(expert_net, 'ex_'+str(exidx)+'_fc7', L.InnerProduct(getattr(expert_net, 'ex_'+str(exidx)+'_drop6'),
-                                                                        param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
-                                                                        inner_product_param = dict(num_output=2048,
-                                                                                                   weight_filler = dict(type='gaussian', std=0.005),
-                                                                                                   bias_filler = dict(type='constant', value=0.5)),
+            setattr(expert_net, 'ex_'+str(exidx)+'_fc7', L.InnerProduct(getattr(expert_net, 'ex_'+str(exidx)+'_relu6'),
                                                                         bottom_data_type = data_type[0],
                                                                         compute_data_type = data_type[0],
-                                                                        top_data_type = data_type[0]))
+                                                                        top_data_type = data_type[0],
+                                                                        param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
+                                                                        inner_product_param = dict(num_output=2048,
+                                                                                                   weight_filler = dict(type='gaussian', std=0.01),
+                                                                                                   bias_filler = dict(type='constant', value=0.5))))
+
                                                                         
             setattr(expert_net, 'ex_'+str(exidx)+'_qu', L.Quantizer(getattr(expert_net, 'ex_'+str(exidx)+'_fc7'),
                                                                     bottom_data_type = data_type[0],
@@ -273,9 +290,10 @@ for bs in range(0, 14):
                                                                 bottom_data_type = data_type[0],
                                                                 compute_data_type = data_type[0],
                                                                 top_data_type = caffe.data_type.CAFFE_FLOAT,
-                                                                moe_param=dict(select_experts=4, gating_net=gating_net_proto, expert_net=expert_net_protos))
+                                                                moe_param=dict(select_experts=4, gating_net=gating_net_proto, expert_net=expert_net_protos,
+                                                                               full_forward=True))
         
-        net.reg = L.EuclideanLoss(net.observed_count, net.expected_count, include=dict(phase=0), loss_weight=1.0)
+        net.reg = L.EuclideanLoss(net.observed_count, net.expected_count, include=dict(phase=0), loss_weight=15.0)
         net.silence = L.Silence(net.observed_count, net.expected_count, include=dict(phase=1), ntop=0)
         
         net.relu7 = L.ReLU(net.moe, in_place=False,
@@ -283,13 +301,13 @@ for bs in range(0, 14):
                            compute_data_type = data_type[0],
                            top_data_type = data_type[0])
         
-        net.drop7 = L.Dropout(net.relu7, in_place=False,
+        net.drop7 = L.Dropout(net.relu7, in_place=True,
                               bottom_data_type = data_type[0],
                               compute_data_type = data_type[0],
                               top_data_type = data_type[0],
                               dropout_param = dict(dropout_ratio=0.5))
         
-        net.fc8 = L.InnerProduct(net.drop7,
+        net.fc8 = L.InnerProduct(net.relu7,
                                  bottom_data_type = data_type[0],
                                  compute_data_type = data_type[0],
                                  top_data_type = data_type[0],

@@ -41,8 +41,8 @@ for bs in range(0, 14):
                                   top_data_type = data_type[0],
                                   param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
                                   convolution_param=dict(num_output=96, kernel_size=11, stride=4,
-                                                         weight_filler=dict(type='mrsa'),
-                                                         bias_filler=dict(type='constant', value=0.25)))
+                                                         weight_filler=dict(type='gaussian', std=0.01),
+                                                         bias_filler=dict(type='constant', value=0.5)))
         
         net.relu1 = L.ReLU(net.conv1, in_place=False,
                            bottom_data_type = data_type[0],
@@ -68,8 +68,8 @@ for bs in range(0, 14):
                                   top_data_type = data_type[0],
                                   param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
                                   convolution_param=dict(num_output=256, pad=2, kernel_size=5, group=2,
-                                                         weight_filler=dict(type='mrsa'),
-                                                         bias_filler=dict(type='constant', value=0.25)))
+                                                         weight_filler=dict(type='gaussian', std=0.01),
+                                                         bias_filler=dict(type='constant', value=0.5)))
         
         net.relu2 = L.ReLU(net.conv2, in_place=False,
                            bottom_data_type = data_type[0],
@@ -95,8 +95,8 @@ for bs in range(0, 14):
                                   top_data_type = data_type[0],
                                   param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
                                   convolution_param=dict(num_output=384, pad=1, kernel_size=3,
-                                                         weight_filler=dict(type='mrsa'),
-                                                         bias_filler=dict(type='constant', value=0.25)))
+                                                         weight_filler=dict(type='gaussian', std=0.01),
+                                                         bias_filler=dict(type='constant', value=0.0)))
         
         net.relu3 = L.ReLU(net.conv3, in_place=False,
                            bottom_data_type = data_type[0],
@@ -109,8 +109,8 @@ for bs in range(0, 14):
                                   top_data_type = data_type[0],
                                   param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
                                   convolution_param=dict(num_output=384, pad=1, kernel_size=3, group=2,
-                                                         weight_filler=dict(type='mrsa'),
-                                                         bias_filler=dict(type='constant', value=0.25)))
+                                                         weight_filler=dict(type='gaussian', std=0.01),
+                                                         bias_filler=dict(type='constant', value=0.5)))
       
         net.relu4 = L.ReLU(net.conv4, in_place=False,
                            bottom_data_type = data_type[0],
@@ -123,8 +123,8 @@ for bs in range(0, 14):
                                   top_data_type = data_type[0],
                                   param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
                                   convolution_param=dict(num_output=256, pad=1, kernel_size=3, group=2,
-                                                         weight_filler=dict(type='mrsa'),
-                                                         bias_filler=dict(type='constant', value=0.25)))
+                                                         weight_filler=dict(type='gaussian', std=0.01),
+                                                         bias_filler=dict(type='constant', value=0.5)))
         
         net.relu5 = L.ReLU(net.conv5, in_place=False,
                            bottom_data_type = data_type[0],
@@ -144,56 +144,56 @@ for bs in range(0, 14):
                                  param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
                                  inner_product_param = dict(
                                      num_output = 4096,
-                                     weight_filler = dict(type='mrsa'),
-                                     bias_filler = dict(type='constant', value=0.25)))
+                                     weight_filler = dict(type='gaussian', std=0.01),
+                                     bias_filler = dict(type='constant', value=0.5)))
         
         net.relu6 = L.ReLU(net.fc6, in_place=False,
                            bottom_data_type = data_type[0],
                            compute_data_type = data_type[0],
                            top_data_type = data_type[0])
         
-        net.drop6 = L.Dropout(net.relu6,
-                              in_place = False,
+        net.drop6 = L.Dropout(net.relu6, in_place = True,
                               bottom_data_type = data_type[0],
                               compute_data_type = data_type[0],
                               top_data_type = data_type[0],
                               dropout_param = dict(dropout_ratio=0.5))
         
-        net.fc7 = L.InnerProduct(net.drop6,
+        net.fc7 = L.InnerProduct(net.relu6,
                                  bottom_data_type = data_type[0],
                                  compute_data_type = data_type[0],
                                  top_data_type = data_type[0],
                                  param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
                                  inner_product_param = dict(
                                      num_output = 4096,
-                                     weight_filler = dict(type='mrsa'),
-                                     bias_filler = dict(type='constant', value=0.25)))
+                                     weight_filler = dict(type='gaussian', std=0.01),
+                                     bias_filler = dict(type='constant', value=0.5)))
         
-        net.relu7 = L.ReLU(net.fc7, in_place=False,
+        net.relu7 = L.ReLU(net.fc7, in_place = False,
                            bottom_data_type = data_type[0],
                            compute_data_type = data_type[0],
                            top_data_type = data_type[0])
         
-        net.drop7 = L.Dropout(net.relu7, in_place=False,
+        net.drop7 = L.Dropout(net.relu7, in_place = True,
                               bottom_data_type = data_type[0],
                               compute_data_type = data_type[0],
                               top_data_type = data_type[0],
                               dropout_param = dict(dropout_ratio=0.5))
         
-        net.fc8 = L.InnerProduct(net.drop7,
+        net.fc8 = L.InnerProduct(net.relu7,
                                  bottom_data_type = data_type[0],
                                  compute_data_type = data_type[0],
                                  top_data_type = data_type[0],
                                  param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)],
                                  inner_product_param = dict(
                                      num_output = 1000,
-                                     weight_filler = dict(type='mrsa'),
-                                     bias_filler = dict(type='constant', value=0.25)))
+                                     weight_filler = dict(type='gaussian', std=0.01),
+                                     bias_filler = dict(type='constant', value=0.0)))
         
         net.loss = L.SoftmaxWithLoss(net.fc8, net.label, include=dict(phase=0))
         # net.pred = L.Softmax(net.fc8, net.label, include=dict(phase=1))
-        net.accuracy = L.Accuracy(net.fc8, net.label, include=dict(phase=1), accuracy_param=dict(top_k=5))
-
+        net.accuracy1 = L.Accuracy(net.fc8, net.label, include=dict(phase=1), accuracy_param=dict(top_k=1))
+        net.accuracy5 = L.Accuracy(net.fc8, net.label, include=dict(phase=1), accuracy_param=dict(top_k=5))
+        
         protonet = net.to_proto()
         protonet.name = 'net'
         protonet.reduced_memory_inference = True

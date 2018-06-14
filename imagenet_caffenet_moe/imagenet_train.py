@@ -38,12 +38,16 @@ if do_training:
     plt.pause(0.0001)
     
     solver = caffe.get_solver(solver_config)
+    solver.restore('net_iter_350000.solverstate')
     for i in range(0, solver_config.max_iter):
         # Train one step
         loss = solver.step(1)
-        #print(np.min(solver.net.blobs['conv1'].data[:]))
-        #print(np.max(solver.net.blobs['conv1'].data[:]))
+        print(np.min(solver.net.blobs['norm1'].data[:]))
+        print(np.max(solver.net.blobs['norm1'].data[:]))
+        print(np.min(solver.net.blobs['moe'].data[:]))
+        print(np.max(solver.net.blobs['moe'].data[:]))
         #print(solver.net.blobs['fc8'].data[:])
+        print(solver.net.blobs['observed_count'].data[0,:])
         # Display the learning progress every 1000 steps
         if (i % 100 == 0):
             losses.append(loss)
@@ -55,10 +59,10 @@ if do_training:
 
 
 # Run a few test steps to observe the value ranges (for quantization)
-testnet = caffe.Net(str('net_' + precision + '_' + str(batch_size)  + '.prototxt'), caffe.TEST, weights='net_450000.caffemodel')
+testnet = caffe.Net(str('net_' + precision + '_' + str(batch_size)  + '.prototxt'), caffe.TEST, weights='net_iter_'+str(solver_config.max_iter)+'.caffemodel')
 # Enable quantizer observation
 testnet.quant_mode = caffe.quantizer_mode.CAFFE_QUANT_OBSERVE
-for k in range(0,10):
+for k in range(0,100):
     testnet.forward()
     if (k % 100 == 0):
       print(k)

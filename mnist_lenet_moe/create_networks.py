@@ -134,6 +134,7 @@ for data_type in zip(data_types, data_types_names):
     net.pred = L.Softmax(net.ip2, include=dict(phase=1))
 
     protonet = net.to_proto()
+    protonet.reduced_memory_inference = True
     protonet.name = 'net'
     with open(protonet.name + '_' + data_type[1] + '.prototxt', 'w') as f:
        print(protonet, file=f)

@@ -230,7 +230,7 @@ layer {
           num_output: 128
           weight_filler {
             type: "gaussian"
-            std: 0.10000000149011612
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -257,7 +257,7 @@ layer {
           decay_mult: 1.0
         }
         param {
-          lr_mult: 2.0
+          lr_mult: 0.0
           decay_mult: 0.0
         }
         bottom_data_type: CAFFE_INT8_QUANTIZED
@@ -267,7 +267,7 @@ layer {
           num_output: 16
           weight_filler {
             type: "gaussian"
-            std: 0.10000000149011612
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -295,7 +295,7 @@ layer {
           num_output: 16
           weight_filler {
             type: "gaussian"
-            std: 0.10000000149011612
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -316,20 +316,87 @@ layer {
         top: "ga_noise"
         noise_param {
           mu: 0.0
-          sigma: 0.10000000149011612
+          sigma: 1.0
         }
       }
       layer {
-        name: "ga_eltwise"
+        name: "ga_eltwise1"
         type: "Eltwise"
         bottom: "ga_fc2"
         bottom: "ga_noise"
-        top: "ga_eltwise"
+        top: "ga_eltwise1"
+      }
+      layer {
+        name: "ga_dummy"
+        type: "DummyData"
+        top: "ga_dummy"
+        dummy_data_param {
+          data_filler {
+            type: "gaussian"
+            std: 10.0
+          }
+          shape {
+            dim: 4096
+            dim: 16
+            dim: 1
+            dim: 1
+          }
+        }
+      }
+      layer {
+        name: "ga_dummy_conv"
+        type: "Convolution"
+        bottom: "ga_dummy"
+        top: "ga_dummy_conv"
+        param {
+          lr_mult: 9.999999747378752e-06
+          decay_mult: 1.0
+        }
+        param {
+          lr_mult: 0.0
+          decay_mult: 0.0
+        }
+        bottom_data_type: CAFFE_INT8_QUANTIZED
+        compute_data_type: CAFFE_INT8_QUANTIZED
+        top_data_type: CAFFE_INT8_QUANTIZED
+        convolution_param {
+          num_output: 16
+          pad: 0
+          kernel_size: 1
+          group: 16
+          weight_filler {
+            type: "constant"
+            value: 1.0
+          }
+          bias_filler {
+            type: "constant"
+            value: 0.0
+          }
+        }
+      }
+      layer {
+        name: "ga_dummy_reshaped"
+        type: "Reshape"
+        bottom: "ga_dummy_conv"
+        top: "ga_dummy_reshaped"
+        reshape_param {
+          shape {
+            dim: 4096
+            dim: 16
+          }
+        }
+      }
+      layer {
+        name: "ga_eltwise2"
+        type: "Eltwise"
+        bottom: "ga_eltwise1"
+        bottom: "ga_dummy_reshaped"
+        top: "ga_eltwise2"
       }
       layer {
         name: "ga_softmax"
         type: "Softmax"
-        bottom: "ga_eltwise"
+        bottom: "ga_eltwise2"
         top: "ga_softmax"
       }
     }
@@ -573,7 +640,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -594,7 +661,7 @@ layer {
         name: "ex_0_drop6"
         type: "Dropout"
         bottom: "ex_0_relu6"
-        top: "ex_0_drop6"
+        top: "ex_0_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -605,7 +672,7 @@ layer {
       layer {
         name: "ex_0_fc7"
         type: "InnerProduct"
-        bottom: "ex_0_drop6"
+        bottom: "ex_0_relu6"
         top: "ex_0_fc7"
         param {
           lr_mult: 1.0
@@ -622,7 +689,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -880,7 +947,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -901,7 +968,7 @@ layer {
         name: "ex_1_drop6"
         type: "Dropout"
         bottom: "ex_1_relu6"
-        top: "ex_1_drop6"
+        top: "ex_1_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -912,7 +979,7 @@ layer {
       layer {
         name: "ex_1_fc7"
         type: "InnerProduct"
-        bottom: "ex_1_drop6"
+        bottom: "ex_1_relu6"
         top: "ex_1_fc7"
         param {
           lr_mult: 1.0
@@ -929,7 +996,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -1187,7 +1254,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -1208,7 +1275,7 @@ layer {
         name: "ex_2_drop6"
         type: "Dropout"
         bottom: "ex_2_relu6"
-        top: "ex_2_drop6"
+        top: "ex_2_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -1219,7 +1286,7 @@ layer {
       layer {
         name: "ex_2_fc7"
         type: "InnerProduct"
-        bottom: "ex_2_drop6"
+        bottom: "ex_2_relu6"
         top: "ex_2_fc7"
         param {
           lr_mult: 1.0
@@ -1236,7 +1303,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -1494,7 +1561,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -1515,7 +1582,7 @@ layer {
         name: "ex_3_drop6"
         type: "Dropout"
         bottom: "ex_3_relu6"
-        top: "ex_3_drop6"
+        top: "ex_3_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -1526,7 +1593,7 @@ layer {
       layer {
         name: "ex_3_fc7"
         type: "InnerProduct"
-        bottom: "ex_3_drop6"
+        bottom: "ex_3_relu6"
         top: "ex_3_fc7"
         param {
           lr_mult: 1.0
@@ -1543,7 +1610,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -1801,7 +1868,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -1822,7 +1889,7 @@ layer {
         name: "ex_4_drop6"
         type: "Dropout"
         bottom: "ex_4_relu6"
-        top: "ex_4_drop6"
+        top: "ex_4_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -1833,7 +1900,7 @@ layer {
       layer {
         name: "ex_4_fc7"
         type: "InnerProduct"
-        bottom: "ex_4_drop6"
+        bottom: "ex_4_relu6"
         top: "ex_4_fc7"
         param {
           lr_mult: 1.0
@@ -1850,7 +1917,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -2108,7 +2175,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -2129,7 +2196,7 @@ layer {
         name: "ex_5_drop6"
         type: "Dropout"
         bottom: "ex_5_relu6"
-        top: "ex_5_drop6"
+        top: "ex_5_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -2140,7 +2207,7 @@ layer {
       layer {
         name: "ex_5_fc7"
         type: "InnerProduct"
-        bottom: "ex_5_drop6"
+        bottom: "ex_5_relu6"
         top: "ex_5_fc7"
         param {
           lr_mult: 1.0
@@ -2157,7 +2224,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -2415,7 +2482,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -2436,7 +2503,7 @@ layer {
         name: "ex_6_drop6"
         type: "Dropout"
         bottom: "ex_6_relu6"
-        top: "ex_6_drop6"
+        top: "ex_6_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -2447,7 +2514,7 @@ layer {
       layer {
         name: "ex_6_fc7"
         type: "InnerProduct"
-        bottom: "ex_6_drop6"
+        bottom: "ex_6_relu6"
         top: "ex_6_fc7"
         param {
           lr_mult: 1.0
@@ -2464,7 +2531,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -2722,7 +2789,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -2743,7 +2810,7 @@ layer {
         name: "ex_7_drop6"
         type: "Dropout"
         bottom: "ex_7_relu6"
-        top: "ex_7_drop6"
+        top: "ex_7_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -2754,7 +2821,7 @@ layer {
       layer {
         name: "ex_7_fc7"
         type: "InnerProduct"
-        bottom: "ex_7_drop6"
+        bottom: "ex_7_relu6"
         top: "ex_7_fc7"
         param {
           lr_mult: 1.0
@@ -2771,7 +2838,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -3029,7 +3096,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -3050,7 +3117,7 @@ layer {
         name: "ex_8_drop6"
         type: "Dropout"
         bottom: "ex_8_relu6"
-        top: "ex_8_drop6"
+        top: "ex_8_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -3061,7 +3128,7 @@ layer {
       layer {
         name: "ex_8_fc7"
         type: "InnerProduct"
-        bottom: "ex_8_drop6"
+        bottom: "ex_8_relu6"
         top: "ex_8_fc7"
         param {
           lr_mult: 1.0
@@ -3078,7 +3145,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -3336,7 +3403,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -3357,7 +3424,7 @@ layer {
         name: "ex_9_drop6"
         type: "Dropout"
         bottom: "ex_9_relu6"
-        top: "ex_9_drop6"
+        top: "ex_9_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -3368,7 +3435,7 @@ layer {
       layer {
         name: "ex_9_fc7"
         type: "InnerProduct"
-        bottom: "ex_9_drop6"
+        bottom: "ex_9_relu6"
         top: "ex_9_fc7"
         param {
           lr_mult: 1.0
@@ -3385,7 +3452,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -3643,7 +3710,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -3664,7 +3731,7 @@ layer {
         name: "ex_10_drop6"
         type: "Dropout"
         bottom: "ex_10_relu6"
-        top: "ex_10_drop6"
+        top: "ex_10_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -3675,7 +3742,7 @@ layer {
       layer {
         name: "ex_10_fc7"
         type: "InnerProduct"
-        bottom: "ex_10_drop6"
+        bottom: "ex_10_relu6"
         top: "ex_10_fc7"
         param {
           lr_mult: 1.0
@@ -3692,7 +3759,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -3950,7 +4017,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -3971,7 +4038,7 @@ layer {
         name: "ex_11_drop6"
         type: "Dropout"
         bottom: "ex_11_relu6"
-        top: "ex_11_drop6"
+        top: "ex_11_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -3982,7 +4049,7 @@ layer {
       layer {
         name: "ex_11_fc7"
         type: "InnerProduct"
-        bottom: "ex_11_drop6"
+        bottom: "ex_11_relu6"
         top: "ex_11_fc7"
         param {
           lr_mult: 1.0
@@ -3999,7 +4066,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -4257,7 +4324,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -4278,7 +4345,7 @@ layer {
         name: "ex_12_drop6"
         type: "Dropout"
         bottom: "ex_12_relu6"
-        top: "ex_12_drop6"
+        top: "ex_12_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -4289,7 +4356,7 @@ layer {
       layer {
         name: "ex_12_fc7"
         type: "InnerProduct"
-        bottom: "ex_12_drop6"
+        bottom: "ex_12_relu6"
         top: "ex_12_fc7"
         param {
           lr_mult: 1.0
@@ -4306,7 +4373,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -4564,7 +4631,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -4585,7 +4652,7 @@ layer {
         name: "ex_13_drop6"
         type: "Dropout"
         bottom: "ex_13_relu6"
-        top: "ex_13_drop6"
+        top: "ex_13_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -4596,7 +4663,7 @@ layer {
       layer {
         name: "ex_13_fc7"
         type: "InnerProduct"
-        bottom: "ex_13_drop6"
+        bottom: "ex_13_relu6"
         top: "ex_13_fc7"
         param {
           lr_mult: 1.0
@@ -4613,7 +4680,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -4871,7 +4938,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -4892,7 +4959,7 @@ layer {
         name: "ex_14_drop6"
         type: "Dropout"
         bottom: "ex_14_relu6"
-        top: "ex_14_drop6"
+        top: "ex_14_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -4903,7 +4970,7 @@ layer {
       layer {
         name: "ex_14_fc7"
         type: "InnerProduct"
-        bottom: "ex_14_drop6"
+        bottom: "ex_14_relu6"
         top: "ex_14_fc7"
         param {
           lr_mult: 1.0
@@ -4920,7 +4987,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -5178,7 +5245,7 @@ layer {
           num_output: 1024
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -5199,7 +5266,7 @@ layer {
         name: "ex_15_drop6"
         type: "Dropout"
         bottom: "ex_15_relu6"
-        top: "ex_15_drop6"
+        top: "ex_15_relu6"
         bottom_data_type: CAFFE_INT8_QUANTIZED
         compute_data_type: CAFFE_INT8_QUANTIZED
         top_data_type: CAFFE_INT8_QUANTIZED
@@ -5210,7 +5277,7 @@ layer {
       layer {
         name: "ex_15_fc7"
         type: "InnerProduct"
-        bottom: "ex_15_drop6"
+        bottom: "ex_15_relu6"
         top: "ex_15_fc7"
         param {
           lr_mult: 1.0
@@ -5227,7 +5294,7 @@ layer {
           num_output: 2048
           weight_filler {
             type: "gaussian"
-            std: 0.004999999888241291
+            std: 0.009999999776482582
           }
           bias_filler {
             type: "constant"
@@ -5246,6 +5313,7 @@ layer {
       }
     }
     select_experts: 4
+    full_forward: true
   }
 }
 layer {
@@ -5254,7 +5322,7 @@ layer {
   bottom: "observed_count"
   bottom: "expected_count"
   top: "reg"
-  loss_weight: 1.0
+  loss_weight: 15.0
   include {
     phase: TRAIN
   }
@@ -5281,7 +5349,7 @@ layer {
   name: "drop7"
   type: "Dropout"
   bottom: "relu7"
-  top: "drop7"
+  top: "relu7"
   bottom_data_type: CAFFE_INT8_QUANTIZED
   compute_data_type: CAFFE_INT8_QUANTIZED
   top_data_type: CAFFE_INT8_QUANTIZED
@@ -5292,7 +5360,7 @@ layer {
 layer {
   name: "fc8"
   type: "InnerProduct"
-  bottom: "drop7"
+  bottom: "relu7"
   top: "fc8"
   param {
     lr_mult: 1.0

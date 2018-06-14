@@ -5,7 +5,7 @@ from caffe_examples_setup import *
 # Choose the precision (half, float, int16 or int8).
 precision = 'float'
 batch_size = 128
-do_training = True
+do_training = False
 
 
 # Create a solver with a few typical parameters
@@ -59,7 +59,7 @@ if do_training:
 testnet = caffe.Net(str('net_' + precision + '_' + str(batch_size)  + '.prototxt'), caffe.TEST, weights='bvlc_reference_caffenet.caffemodel')
 # Enable quantizer observation
 testnet.quant_mode = caffe.quantizer_mode.CAFFE_QUANT_OBSERVE
-for k in range(0,10):
+for k in range(0,100):
     testnet.forward()
     if (k % 100 == 0):
       print(k)

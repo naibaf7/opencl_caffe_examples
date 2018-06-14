@@ -73,7 +73,7 @@ for c,f in zip(values_celsius_test,values_farenheit_test):
     testnet.forward()
     predicted_f = testnet.blobs['output'].data[0,0]
     print('Cesius: '+str(c)+'°C, predicted: '+str(predicted_f)+' °F, actual: '+str(f)+' °F')
-    error.append(f-predicted_f)
+    error.append(abs(f-predicted_f))
     
 print('Average error: '+str(np.array(error).mean())+' °F')
 

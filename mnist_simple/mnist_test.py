@@ -3,7 +3,7 @@ sys.path.append('..')
 from caffe_examples_setup import *
 
 # Choose the precision (half, float, int16 or int8)
-precision = 'int16'
+precision = 'int8'
 
 # Load the data
 f = open('../data/mnist.pkl', 'rb')
